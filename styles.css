@@ -1,0 +1,97 @@
+:root {
+  --fond: #f6f4f1;
+  --surface: #ffffff;
+  --texte: #1f1d1b;
+  --doux: #625c56;
+  --bordure: #e4dfd8;
+  --accent: #b3412b;
+  --ombre: 0 1px 2px rgba(0,0,0,.06), 0 4px 16px rgba(0,0,0,.06);
+  color-scheme: light dark;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --fond: #161514;
+    --surface: #211f1d;
+    --texte: #f1eeea;
+    --doux: #aaa39b;
+    --bordure: #34312e;
+    --ombre: 0 1px 2px rgba(0,0,0,.4);
+  }
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  background: var(--fond);
+  color: var(--texte);
+  line-height: 1.5;
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+}
+.entete, main, .pied { max-width: 960px; margin: 0 auto; padding: 0 16px; }
+.entete { display: flex; align-items: center; justify-content: space-between; padding-top: 20px; }
+.marque { display: flex; gap: 12px; align-items: center; }
+.marque h1 { margin: 0; font-size: 1.35rem; letter-spacing: .02em; }
+.marque p { margin: 0; color: var(--doux); font-size: .9rem; }
+.btn-icone {
+  width: 44px; height: 44px; border-radius: 50%;
+  border: 1px solid var(--bordure); background: var(--surface); color: var(--texte);
+  display: grid; place-items: center; cursor: pointer;
+}
+.btn-icone svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.8; }
+.accueil { margin: 28px 0 16px; }
+.accueil h2 { margin: 0 0 4px; font-size: 1.6rem; }
+.accueil p { margin: 0; color: var(--doux); }
+.grille { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+.carte {
+  background: var(--surface); border: 1px solid var(--bordure); border-radius: 16px;
+  box-shadow: var(--ombre); overflow: hidden; display: flex; flex-direction: column;
+}
+.carte-principal {
+  display: flex; gap: 14px; align-items: flex-start; padding: 18px;
+  text-decoration: none; color: inherit; flex: 1;
+}
+.carte-principal:hover .carte-nom, .carte-principal:focus-visible .carte-nom { text-decoration: underline; }
+.carte-principal:focus-visible { outline: 3px solid var(--couleur); outline-offset: -3px; }
+.pastille {
+  flex: none; width: 48px; height: 48px; border-radius: 12px;
+  background: var(--couleur); color: #fff; display: grid; place-items: center;
+}
+.pastille svg { width: 26px; height: 26px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.carte-nom { margin: 0; font-size: 1.1rem; }
+.carte-desc { margin: 2px 0 0; color: var(--doux); font-size: .92rem; }
+.sous-liens { display: flex; flex-wrap: wrap; gap: 8px; padding: 0 18px 16px 80px; margin: 0; list-style: none; }
+.sous-liens a {
+  display: inline-block; padding: 6px 12px; border-radius: 999px; font-size: .85rem;
+  border: 1px solid var(--bordure); color: var(--texte); text-decoration: none;
+}
+.sous-liens a:hover { border-color: var(--couleur); color: var(--couleur); }
+.aide {
+  margin: 28px 0; padding: 18px; border-radius: 16px;
+  background: var(--surface); border: 1px solid var(--bordure);
+}
+.aide h3 { margin: 0 0 8px; font-size: 1rem; }
+.aide ul { margin: 0; padding-left: 20px; color: var(--doux); }
+.aide a { color: var(--accent); }
+.btn-installer, dialog button {
+  font: inherit; border: 0; border-radius: 10px; padding: 10px 18px; cursor: pointer;
+  background: var(--accent); color: #fff;
+}
+.btn-installer { display: block; margin: 0 auto 24px; }
+.pied { color: var(--doux); font-size: .82rem; text-align: center; padding-bottom: 24px; }
+dialog {
+  border: 1px solid var(--bordure); border-radius: 16px; background: var(--surface); color: var(--texte);
+  width: min(420px, calc(100vw - 32px)); padding: 20px;
+}
+dialog::backdrop { background: rgba(0,0,0,.4); }
+dialog h2 { margin: 0 0 12px; }
+dialog label { display: block; margin-top: 12px; font-size: .9rem; font-weight: 600; }
+dialog input {
+  width: 100%; margin-top: 4px; padding: 10px; font: inherit; border-radius: 8px;
+  border: 1px solid var(--bordure); background: var(--fond); color: var(--texte);
+}
+.note { font-size: .8rem; color: var(--doux); }
+.actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px; }
+dialog button.secondaire { background: transparent; color: var(--texte); border: 1px solid var(--bordure); }
+@media (max-width: 480px) {
+  .sous-liens { padding-left: 18px; }
+}

@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="fr-CA">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Portail LAPIQ</title>
+  <meta name="description" content="Accès rapide à Yapla, Microsoft 365, au site de LAPIQ et au Campus LAPIQ (Moodle).">
+  <meta name="theme-color" content="#b3412b">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="LAPIQ">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="entete">
+    <div class="marque">
+      <img src="icons/icon.svg" alt="" width="44" height="44">
+      <div>
+        <h1 id="titre">LAPIQ</h1>
+        <p id="sous-titre">Votre portail d'accès</p>
+      </div>
+    </div>
+    <button id="btn-profil" class="btn-icone" aria-label="Mon profil" aria-haspopup="dialog">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg>
+    </button>
+  </header>
+
+  <main>
+    <section class="accueil">
+      <h2 id="salutation">Bonjour</h2>
+      <p>Choisissez le service auquel vous souhaitez accéder.</p>
+    </section>
+
+    <section id="services" class="grille" aria-label="Services"></section>
+
+    <section class="aide">
+      <h3>Besoin d'aide pour vous connecter?</h3>
+      <ul>
+        <li><strong>Microsoft 365 :</strong> utilisez votre adresse courriel LAPIQ.</li>
+        <li><strong>Campus LAPIQ :</strong> si l'option « Microsoft » apparaît sur la page de connexion Moodle, utilisez-la avec votre compte LAPIQ.</li>
+        <li><strong>Yapla :</strong> utilisez le courriel associé à votre adhésion. Le lien « Mot de passe oublié » vous permet de le réinitialiser.</li>
+      </ul>
+      <p id="soutien"></p>
+    </section>
+
+    <button id="btn-installer" class="btn-installer" hidden>Installer l'application</button>
+  </main>
+
+  <footer class="pied">
+    <p>Les liens s'ouvrent dans un nouvel onglet. Aucun mot de passe n'est conservé par ce portail.</p>
+  </footer>
+
+  <dialog id="profil">
+    <form method="dialog" id="form-profil">
+      <h2>Mon profil</h2>
+      <label for="prenom">Prénom</label>
+      <input id="prenom" autocomplete="given-name">
+      <label for="courriel">Courriel LAPIQ (Microsoft 365)</label>
+      <input id="courriel" type="email" autocomplete="email" placeholder="prenom.nom@lapiq.org">
+      <p class="note">Ces informations restent sur cet appareil. Le courriel sert uniquement à préremplir la connexion Microsoft 365.</p>
+      <div class="actions">
+        <button value="annuler" class="secondaire">Annuler</button>
+        <button value="ok" id="enregistrer">Enregistrer</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
