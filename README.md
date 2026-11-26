@@ -41,7 +41,7 @@ Cette carte n'est donc **pas une preuve d'adhésion vérifiée**. Pour la rendre
 - **Yapla :** compte membre Yapla distinct. La carte de membre officielle est une page HTML personnalisée dans Yapla ; l'application y renvoie par le bouton « Afficher ma carte officielle (Yapla) ».
 
 ## Composants tiers
-- `vendor/qrcode.js` : [qrcode-generator](https://github.com/kazuhikoarase/qrcode-generator) 1.4.4 (licence MIT), inclus localement pour fonctionner hors ligne.
+- [qrcode-generator](https://github.com/kazuhikoarase/qrcode-generator) 1.4.4 (licence MIT), chargé depuis jsDelivr avec vérification d'intégrité (SRI) et mis en cache par l'application pour fonctionner hors ligne.
 
 ## Tester localement
 ```bash

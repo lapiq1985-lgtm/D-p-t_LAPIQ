@@ -1,10 +1,15 @@
-// Service worker : garde l'interface du portail disponible hors ligne.
-var CACHE = "lapiq-portail-v3";
+// Service worker : garde le portail (et la carte de membre) disponible hors ligne.
+var CACHE = "lapiq-portail-v4";
+var QR = "https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js";
 var FICHIERS = ["./", "index.html", "styles.css", "app.js", "config.js",
-  "manifest.webmanifest", "vendor/qrcode.js", "icons/icon.svg", "icons/icon-192.png", "icons/icon-512.png"];
+  "manifest.webmanifest", "icons/icon.svg", "icons/icon-192.png", "icons/icon-512.png"];
 
 self.addEventListener("install", function (e) {
-  e.waitUntil(caches.open(CACHE).then(function (c) { return c.addAll(FICHIERS); }));
+  e.waitUntil(caches.open(CACHE).then(function (c) {
+    return c.addAll(FICHIERS).then(function () {
+      return fetch(QR, { mode: "cors" }).then(function (r) { if (r.ok) return c.put(QR, r); }).catch(function () {});
+    });
+  }));
   self.skipWaiting();
 });
 self.addEventListener("activate", function (e) {
@@ -13,9 +18,21 @@ self.addEventListener("activate", function (e) {
   }));
   self.clients.claim();
 });
-// Réseau d'abord (pour recevoir les mises à jour de config.js), cache en secours.
 self.addEventListener("fetch", function (e) {
-  if (e.request.method !== "GET" || new URL(e.request.url).origin !== location.origin) return;
+  if (e.request.method !== "GET") return;
+  // Bibliothèque QR (version fixe) : cache d'abord.
+  if (e.request.url === QR) {
+    e.respondWith(caches.match(QR).then(function (r) {
+      return r || fetch(e.request).then(function (rep) {
+        var copie = rep.clone();
+        caches.open(CACHE).then(function (c) { c.put(QR, copie); });
+        return rep;
+      });
+    }));
+    return;
+  }
+  if (new URL(e.request.url).origin !== location.origin) return;
+  // Fichiers du portail : réseau d'abord (mises à jour de config.js), cache en secours.
   e.respondWith(fetch(e.request).then(function (r) {
     var copie = r.clone();
     caches.open(CACHE).then(function (c) { c.put(e.request, copie); });
