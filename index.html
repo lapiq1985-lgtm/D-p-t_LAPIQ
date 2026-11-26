@@ -5,26 +5,28 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Portail LAPIQ</title>
   <meta name="description" content="Accès rapide à Yapla, Microsoft 365, au site de LAPIQ et au Campus LAPIQ (Moodle).">
-  <meta name="theme-color" content="#b3412b">
+  <meta name="theme-color" content="#0b1c48">
   <link rel="manifest" href="manifest.webmanifest">
-  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
-  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="icon" href="icons/favicon.png" type="image/png">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="LAPIQ">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <header class="entete">
+   <div class="entete-int">
     <div class="marque">
-      <img src="icons/icon.svg" alt="" width="44" height="44">
+      <img id="logo" src="icons/logo-lapiq.png" alt="Logo de LAPIQ" width="56" height="56">
       <div>
         <h1 id="titre">LAPIQ</h1>
-        <p id="sous-titre">Votre portail d'accès</p>
+        <p id="sous-titre">Portail des membres</p>
       </div>
     </div>
     <button id="btn-profil" class="btn-icone" aria-label="Mon profil" aria-haspopup="dialog">
       <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg>
     </button>
+   </div>
   </header>
 
   <main>
@@ -51,6 +53,7 @@
   </main>
 
   <footer class="pied">
+    <p id="nom-complet"></p>
     <p>Les liens s'ouvrent dans un nouvel onglet. Aucun mot de passe n'est conservé par ce portail.</p>
   </footer>
 

@@ -7,7 +7,9 @@
  */
 window.LAPIQ_CONFIG = {
   organisation: "LAPIQ",
-  sousTitre: "Votre portail d'accès",
+  nomComplet: "L'Association des pompiers instructeurs du Québec",
+  sousTitre: "Portail des membres",
+  logo: "icons/logo-lapiq.png",
 
   // Domaine Microsoft 365 de l'organisation. Chaque membre possède une
   // adresse @lapiq.org qui donne accès à Microsoft 365 ET au Campus (Moodle).
@@ -32,7 +34,7 @@ window.LAPIQ_CONFIG = {
       id: "yapla",
       nom: "Mon dossier Yapla",
       description: "Adhésion, inscriptions, factures et profil de membre.",
-      couleur: "#2f7d6d",
+      couleur: "#d21f30",
       icone: "yapla",
       url: "https://lapiq.s1.yapla.com/fr/espace-membre/", // À CONFIRMER
       liens: [
@@ -44,7 +46,7 @@ window.LAPIQ_CONFIG = {
       id: "m365",
       nom: "Microsoft 365",
       description: "Courriel, Teams, OneDrive — avec votre adresse @lapiq.org.",
-      couleur: "#2b5fb3",
+      couleur: "#0b1c48",
       icone: "m365",
       url: "https://www.office.com/?auth=2",
       m365: true, // ajoute automatiquement domain_hint / login_hint
@@ -58,8 +60,9 @@ window.LAPIQ_CONFIG = {
       id: "campus",
       nom: "Campus LAPIQ",
       description: "Vos formations en ligne (connexion avec votre compte @lapiq.org).",
-      couleur: "#b3412b",
+      couleur: "#0b1c48",
       icone: "campus",
+      logo: "icons/logo-campus.png",
       url: "https://campus.lapiq.org/my/courses.php",
       liens: [
         { nom: "Tableau de bord", url: "https://campus.lapiq.org/my/" },
@@ -71,8 +74,9 @@ window.LAPIQ_CONFIG = {
       id: "site",
       nom: "Site de LAPIQ",
       description: "Nouvelles, formations offertes et informations.",
-      couleur: "#6b4fa3",
+      couleur: "#d21f30",
       icone: "site",
+      logo: "icons/logo-lapiq.png",
       url: "https://lapiq.org/",
       liens: []
     }

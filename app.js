@@ -93,7 +93,7 @@
 
     var haut = el("div", { class: "cm-haut" });
     var org = el("div", { class: "cm-org" });
-    org.appendChild(el("img", { src: "icons/icon.svg", alt: "" }));
+    org.appendChild(el("img", { src: cfg.logo, alt: "" }));
     org.appendChild(texte("span", {}, cfg.organisation));
     haut.appendChild(org);
     var st = statut(p.expiration);
@@ -165,7 +165,8 @@
       var url = s.m365 ? urlM365(s.url, profil) : s.url;
 
       var wrap = el("span"); wrap.style.display = "contents";
-      wrap.appendChild(el("span", { class: "pastille", "aria-hidden": "true" }, ICONES[s.icone] || ICONES.site));
+      if (s.logo) wrap.appendChild(el("img", { class: "pastille-logo", src: s.logo, alt: "" }));
+      else wrap.appendChild(el("span", { class: "pastille", "aria-hidden": "true" }, ICONES[s.icone] || ICONES.site));
       var corps = el("div");
       corps.appendChild(texte("h3", { class: "carte-nom" }, s.nom));
       corps.appendChild(texte("p", { class: "carte-desc" }, s.description));
@@ -192,6 +193,8 @@
     var profil = lireProfil();
     document.getElementById("titre").textContent = cfg.organisation;
     document.getElementById("sous-titre").textContent = cfg.sousTitre;
+    if (cfg.logo) document.getElementById("logo").src = cfg.logo;
+    document.getElementById("nom-complet").textContent = cfg.nomComplet || "";
     var prenom = profil.prenom || (profil.nom || "").split(/\s+/)[0];
     document.getElementById("salutation").textContent = prenom ? "Bonjour " + prenom + "!" : "Bonjour!";
     rendreCarte(profil);

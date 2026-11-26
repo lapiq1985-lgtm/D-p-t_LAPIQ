@@ -1,21 +1,31 @@
+/* ------------------------------------------------------------
+ * Portail LAPIQ — couleurs tirées du logo
+ *   Marine  #0b1c48   Rouge  #d21f30   Blanc
+ * ------------------------------------------------------------ */
 :root {
-  --fond: #f6f4f1;
+  --marine: #0b1c48;
+  --marine-2: #16306e;
+  --rouge: #d21f30;
+  --rouge-fonce: #a8121f;
+  --fond: #f3f5f9;
   --surface: #ffffff;
-  --texte: #1f1d1b;
-  --doux: #625c56;
-  --bordure: #e4dfd8;
-  --accent: #b3412b;
-  --ombre: 0 1px 2px rgba(0,0,0,.06), 0 4px 16px rgba(0,0,0,.06);
+  --texte: #0f1a33;
+  --doux: #55607a;
+  --bordure: #dde2ec;
+  --accent: var(--rouge);
+  --lien: var(--marine);
+  --ombre: 0 1px 2px rgba(11,28,72,.06), 0 6px 18px rgba(11,28,72,.08);
   color-scheme: light dark;
 }
 @media (prefers-color-scheme: dark) {
   :root {
-    --fond: #161514;
-    --surface: #211f1d;
-    --texte: #f1eeea;
-    --doux: #aaa39b;
-    --bordure: #34312e;
-    --ombre: 0 1px 2px rgba(0,0,0,.4);
+    --fond: #070f26;
+    --surface: #0f1c3f;
+    --texte: #eef1f8;
+    --doux: #a4adc4;
+    --bordure: #243563;
+    --lien: #9db4ff;
+    --ombre: 0 1px 2px rgba(0,0,0,.5);
   }
 }
 * { box-sizing: border-box; }
@@ -25,144 +35,198 @@ body {
   background: var(--fond);
   color: var(--texte);
   line-height: 1.5;
-  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  padding: 0 env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
 }
-.entete, main, .pied { max-width: 960px; margin: 0 auto; padding: 0 16px; }
-.entete { display: flex; align-items: center; justify-content: space-between; padding-top: 20px; }
-.marque { display: flex; gap: 12px; align-items: center; }
-.marque h1 { margin: 0; font-size: 1.35rem; letter-spacing: .02em; }
-.marque p { margin: 0; color: var(--doux); font-size: .9rem; }
+main, .pied { max-width: 960px; margin: 0 auto; padding: 0 16px; }
+
+/* ---------- En-tête : bande marine + liseré rouge (comme l'anneau du logo) ---------- */
+.entete {
+  background: var(--marine);
+  color: #fff;
+  padding-top: env(safe-area-inset-top);
+  border-bottom: 4px solid var(--rouge);
+  box-shadow: 0 3px 0 #fff, 0 6px 0 var(--marine);
+  margin-bottom: 6px;
+}
+.entete-int {
+  max-width: 960px; margin: 0 auto; padding: 14px 16px;
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+}
+.marque { display: flex; gap: 12px; align-items: center; min-width: 0; }
+.marque img { width: 56px; height: 56px; border-radius: 50%; background: #fff; flex: none; }
+.marque h1 { margin: 0; font-size: 1.4rem; font-weight: 800; letter-spacing: .06em; font-style: italic; }
+.marque p { margin: 0; color: #c9d2ea; font-size: .9rem; }
 .btn-icone {
-  width: 44px; height: 44px; border-radius: 50%;
-  border: 1px solid var(--bordure); background: var(--surface); color: var(--texte);
+  width: 44px; height: 44px; border-radius: 50%; flex: none;
+  border: 2px solid rgba(255,255,255,.6); background: transparent; color: #fff;
   display: grid; place-items: center; cursor: pointer;
 }
+.btn-icone:hover { background: rgba(255,255,255,.12); }
 .btn-icone svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.8; }
-.accueil { margin: 28px 0 16px; }
-.accueil h2 { margin: 0 0 4px; font-size: 1.6rem; }
+
+/* ---------- Accueil ---------- */
+.accueil { margin: 24px 0 16px; }
+.accueil h2 { margin: 0 0 4px; font-size: 1.6rem; color: var(--texte); }
 .accueil p { margin: 0; color: var(--doux); }
+
+/* ---------- Services ---------- */
 .grille { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
 .carte {
   background: var(--surface); border: 1px solid var(--bordure); border-radius: 16px;
+  border-top: 4px solid var(--couleur);
   box-shadow: var(--ombre); overflow: hidden; display: flex; flex-direction: column;
 }
 .carte-principal {
-  display: flex; gap: 14px; align-items: flex-start; padding: 18px;
+  display: flex; gap: 14px; align-items: center; padding: 18px;
   text-decoration: none; color: inherit; flex: 1;
 }
 .carte-principal:hover .carte-nom, .carte-principal:focus-visible .carte-nom { text-decoration: underline; }
-.carte-principal:focus-visible { outline: 3px solid var(--couleur); outline-offset: -3px; }
+.carte-principal:focus-visible { outline: 3px solid var(--rouge); outline-offset: -3px; }
 .pastille {
-  flex: none; width: 48px; height: 48px; border-radius: 12px;
+  flex: none; width: 52px; height: 52px; border-radius: 50%;
   background: var(--couleur); color: #fff; display: grid; place-items: center;
+  box-shadow: 0 0 0 3px var(--surface), 0 0 0 5px var(--couleur);
 }
 .pastille svg { width: 26px; height: 26px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.pastille-logo { flex: none; width: 58px; height: 58px; border-radius: 50%; background: #fff; }
 .carte-nom { margin: 0; font-size: 1.1rem; }
 .carte-desc { margin: 2px 0 0; color: var(--doux); font-size: .92rem; }
-.sous-liens { display: flex; flex-wrap: wrap; gap: 8px; padding: 0 18px 16px 80px; margin: 0; list-style: none; }
+.sous-liens { display: flex; flex-wrap: wrap; gap: 8px; padding: 0 18px 16px 90px; margin: 0; list-style: none; }
 .sous-liens a {
   display: inline-block; padding: 6px 12px; border-radius: 999px; font-size: .85rem;
   border: 1px solid var(--bordure); color: var(--texte); text-decoration: none;
 }
-.sous-liens a:hover { border-color: var(--couleur); color: var(--couleur); }
+.sous-liens a:hover { border-color: var(--rouge); color: var(--rouge); }
+
+/* ---------- Aide ---------- */
 .aide {
   margin: 28px 0; padding: 18px; border-radius: 16px;
-  background: var(--surface); border: 1px solid var(--bordure);
+  background: var(--surface); border: 1px solid var(--bordure); border-left: 5px solid var(--marine);
 }
+@media (prefers-color-scheme: dark) { .aide { border-left-color: var(--rouge); } }
 .aide h3 { margin: 0 0 8px; font-size: 1rem; }
 .aide ul { margin: 0; padding-left: 20px; color: var(--doux); }
-.aide a { color: var(--accent); }
+.aide a { color: var(--lien); }
+
+/* ---------- Boutons ---------- */
 .btn-installer, dialog button {
-  font: inherit; border: 0; border-radius: 10px; padding: 10px 18px; cursor: pointer;
-  background: var(--accent); color: #fff;
+  font: inherit; font-weight: 600; border: 0; border-radius: 10px; padding: 10px 18px; cursor: pointer;
+  background: var(--rouge); color: #fff;
 }
+.btn-installer:hover, dialog button:hover { background: var(--rouge-fonce); }
 .btn-installer { display: block; margin: 0 auto 24px; }
+dialog button.secondaire { background: transparent; color: var(--texte); border: 1px solid var(--bordure); }
+
 .pied { color: var(--doux); font-size: .82rem; text-align: center; padding-bottom: 24px; }
+.pied p { margin: 4px 0; }
+#nom-complet { font-weight: 700; color: var(--texte); text-transform: uppercase; letter-spacing: .06em; font-size: .75rem; }
+
+/* ---------- Dialogues ---------- */
 dialog {
   border: 1px solid var(--bordure); border-radius: 16px; background: var(--surface); color: var(--texte);
   width: min(420px, calc(100vw - 32px)); padding: 20px;
+  max-height: calc(100dvh - 32px); overflow: auto;
 }
-dialog::backdrop { background: rgba(0,0,0,.4); }
+dialog::backdrop { background: rgba(11,28,72,.55); }
 dialog h2 { margin: 0 0 12px; }
 dialog label { display: block; margin-top: 12px; font-size: .9rem; font-weight: 600; }
 dialog input {
   width: 100%; margin-top: 4px; padding: 10px; font: inherit; border-radius: 8px;
   border: 1px solid var(--bordure); background: var(--fond); color: var(--texte);
 }
+dialog input:focus { outline: 2px solid var(--marine-2); border-color: transparent; }
 .note { font-size: .8rem; color: var(--doux); }
 .actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px; }
-dialog button.secondaire { background: transparent; color: var(--texte); border: 1px solid var(--bordure); }
-@media (max-width: 480px) {
-  .sous-liens { padding-left: 18px; }
-}
-
-/* ---------- Carte de membre ---------- */
-#zone-carte { margin-bottom: 20px; }
-.carte-membre {
-  --c: #b3412b;
-  position: relative; display: grid; grid-template-columns: 1fr auto; gap: 14px;
-  width: 100%; max-width: 520px; padding: 18px; border-radius: 18px; border: 0;
-  background: linear-gradient(135deg, #b3412b 0%, #7e2818 100%); color: #fff;
-  box-shadow: 0 8px 24px rgba(126,40,24,.35); text-align: left; font: inherit; cursor: pointer;
-}
-.carte-membre:focus-visible { outline: 3px solid var(--texte); outline-offset: 3px; }
-.cm-haut { grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: center; gap: 8px; }
-.cm-org { display: flex; align-items: center; gap: 8px; font-weight: 700; letter-spacing: .04em; }
-.cm-org img { width: 28px; height: 28px; border-radius: 7px; background: rgba(255,255,255,.15); }
-.cm-titre { font-size: .72rem; text-transform: uppercase; letter-spacing: .12em; opacity: .85; }
-.cm-identite { display: flex; gap: 12px; align-items: center; min-width: 0; }
-.cm-photo {
-  flex: none; width: 64px; height: 64px; border-radius: 12px; object-fit: cover;
-  background: rgba(255,255,255,.18); display: grid; place-items: center; font-weight: 700; font-size: 1.3rem;
-}
-.cm-nom { margin: 0; font-size: 1.15rem; line-height: 1.2; overflow-wrap: anywhere; }
-.cm-cat { margin: 2px 0 0; font-size: .85rem; opacity: .9; }
-.cm-champs { grid-column: 1; display: flex; gap: 18px; flex-wrap: wrap; margin: 0; }
-.cm-champs dt { font-size: .68rem; text-transform: uppercase; letter-spacing: .1em; opacity: .8; }
-.cm-champs dd { margin: 0; font-weight: 600; font-variant-numeric: tabular-nums; }
-.cm-qr { grid-column: 2; grid-row: 2 / span 2; align-self: center; background: #fff; border-radius: 10px; padding: 6px; line-height: 0; }
-.cm-qr svg { width: 88px; height: 88px; }
-.statut {
-  display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: .75rem; font-weight: 700;
-  background: #fff; color: #1d6b3a;
-}
-.statut.bientot { color: #8a5a00; }
-.statut.expiree { background: #2a0d07; color: #ffb4a5; }
-.cm-pied { grid-column: 1 / -1; display: flex; justify-content: space-between; gap: 8px; font-size: .78rem; opacity: .9; }
-.cm-lien { display: inline-block; margin-top: 8px; color: var(--accent); font-size: .9rem; }
-.carte-vide {
-  max-width: 520px; padding: 18px; border-radius: 18px; border: 2px dashed var(--bordure);
-  background: var(--surface); display: flex; gap: 12px; align-items: center; justify-content: space-between; flex-wrap: wrap;
-}
-.carte-vide p { margin: 0; color: var(--doux); }
-.carte-vide button { font: inherit; border: 0; border-radius: 10px; padding: 10px 16px; background: var(--accent); color: #fff; cursor: pointer; }
-
-/* Vue plein écran : carte agrandie pour présentation */
-dialog.plein-ecran { width: min(560px, calc(100vw - 16px)); padding: 16px; }
-dialog.plein-ecran .carte-membre { cursor: default; grid-template-columns: 1fr; box-shadow: none; }
-dialog.plein-ecran .cm-qr { grid-column: 1; grid-row: auto; justify-self: center; padding: 10px; }
-dialog.plein-ecran .cm-qr svg { width: min(240px, 60vw); height: min(240px, 60vw); }
-dialog.plein-ecran .cm-photo { width: 84px; height: 84px; }
-dialog.plein-ecran .cm-nom { font-size: 1.4rem; }
 .actions.centre { justify-content: center; }
-
 fieldset { border: 1px solid var(--bordure); border-radius: 12px; margin: 16px 0 0; padding: 4px 12px 12px; }
 legend { font-weight: 700; padding: 0 4px; }
 .photo-ligne { display: flex; align-items: center; gap: 8px; margin-top: 4px; }
 .photo-ligne input { flex: 1; min-width: 0; }
 #apercu-photo { width: 44px; height: 44px; border-radius: 8px; object-fit: cover; }
-dialog { max-height: calc(100dvh - 32px); overflow: auto; }
+.erreur { color: var(--rouge); font-size: .82rem; margin: 4px 0 0; }
+@media (prefers-color-scheme: dark) { .erreur { color: #ff8a95; } }
 
+/* ---------- Carte de membre ---------- */
+#zone-carte { margin-bottom: 20px; }
+.carte-membre {
+  position: relative; overflow: hidden; isolation: isolate;
+  display: grid; grid-template-columns: 1fr auto; gap: 14px;
+  width: 100%; max-width: 520px; padding: 18px 18px 14px; border: 0; border-radius: 18px;
+  background: linear-gradient(140deg, var(--marine-2) 0%, var(--marine) 70%);
+  color: #fff; text-align: left; font: inherit; cursor: pointer;
+  box-shadow: inset 0 0 0 3px var(--marine), inset 0 0 0 6px var(--rouge), inset 0 0 0 8px #fff,
+              0 10px 26px rgba(11,28,72,.35);
+}
+/* Logo en filigrane */
+.carte-membre::before {
+  content: ""; position: absolute; z-index: -1; right: -60px; bottom: -60px; width: 240px; height: 240px;
+  background: url("icons/logo-lapiq.png") center / contain no-repeat; opacity: .09;
+}
+.carte-membre:focus-visible { outline: 3px solid var(--rouge); outline-offset: 3px; }
+.cm-haut { grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: center; gap: 8px; padding-top: 4px; }
+.cm-org { display: flex; align-items: center; gap: 10px; font-weight: 800; letter-spacing: .06em; font-style: italic; font-size: 1.05rem; }
+.cm-org img { width: 40px; height: 40px; border-radius: 50%; background: #fff; }
+.cm-titre { font-size: .72rem; text-transform: uppercase; letter-spacing: .12em; opacity: .85; }
+.cm-identite { display: flex; gap: 12px; align-items: center; min-width: 0; }
+.cm-photo {
+  flex: none; width: 64px; height: 64px; border-radius: 50%; object-fit: cover;
+  background: var(--rouge); display: grid; place-items: center; font-weight: 800; font-size: 1.3rem;
+  box-shadow: 0 0 0 2px #fff;
+}
+.cm-nom { margin: 0; font-size: 1.15rem; font-weight: 700; line-height: 1.2; overflow-wrap: anywhere; }
+.cm-cat { margin: 2px 0 0; font-size: .85rem; color: #c9d2ea; }
+.cm-champs { grid-column: 1; display: flex; gap: 18px; flex-wrap: wrap; margin: 0; }
+.cm-champs dt { font-size: .68rem; text-transform: uppercase; letter-spacing: .1em; color: #c9d2ea; }
+.cm-champs dd { margin: 0; font-weight: 700; font-variant-numeric: tabular-nums; }
+.cm-qr { grid-column: 2; grid-row: 2 / span 2; align-self: center; background: #fff; border-radius: 10px; padding: 6px; line-height: 0; }
+.cm-qr svg { width: 88px; height: 88px; }
+.statut {
+  display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: .75rem; font-weight: 700;
+  background: #fff; color: #17663a;
+}
+.statut.bientot { color: #8a5a00; }
+.statut.expiree { background: var(--rouge); color: #fff; }
+.cm-pied {
+  grid-column: 1 / -1; display: flex; justify-content: space-between; gap: 8px;
+  font-size: .78rem; color: #c9d2ea; border-top: 1px solid rgba(255,255,255,.2); padding-top: 8px;
+}
+.carte-vide {
+  max-width: 520px; padding: 18px; border-radius: 18px; border: 2px dashed var(--bordure);
+  background: var(--surface); display: flex; gap: 12px; align-items: center; justify-content: space-between; flex-wrap: wrap;
+}
+.carte-vide p { margin: 0; color: var(--doux); }
+.carte-vide button { font: inherit; font-weight: 600; border: 0; border-radius: 10px; padding: 10px 16px; background: var(--rouge); color: #fff; cursor: pointer; }
+.btn-carte-officielle {
+  display: inline-flex; align-items: center; gap: 6px; margin-top: 12px;
+  padding: 10px 16px; border-radius: 10px; border: 2px solid var(--marine);
+  color: var(--marine); text-decoration: none; font-weight: 700; font-size: .92rem;
+}
+.btn-carte-officielle::after { content: "↗"; }
+.btn-carte-officielle:hover { background: var(--marine); color: #fff; }
+@media (prefers-color-scheme: dark) {
+  .btn-carte-officielle { border-color: #fff; color: #fff; }
+  .btn-carte-officielle:hover { background: #fff; color: var(--marine); }
+}
+
+/* Vue plein écran */
+dialog.plein-ecran { width: min(560px, calc(100vw - 16px)); padding: 16px; }
+dialog.plein-ecran .carte-membre { cursor: default; grid-template-columns: 1fr; box-shadow: inset 0 0 0 3px var(--marine), inset 0 0 0 6px var(--rouge), inset 0 0 0 8px #fff; }
+dialog.plein-ecran .carte-membre::before { width: 320px; height: 320px; }
+dialog.plein-ecran .cm-qr { grid-column: 1; grid-row: auto; justify-self: center; padding: 10px; }
+dialog.plein-ecran .cm-qr svg { width: min(240px, 60vw); height: min(240px, 60vw); }
+dialog.plein-ecran .cm-photo { width: 84px; height: 84px; }
+dialog.plein-ecran .cm-nom { font-size: 1.4rem; }
+
+@media (max-width: 480px) {
+  .sous-liens { padding-left: 18px; }
+  .marque h1 { font-size: 1.25rem; }
+}
 @media (max-width: 400px) {
   .cm-qr svg { width: 72px; height: 72px; }
 }
 
-.btn-carte-officielle {
-  display: inline-flex; align-items: center; gap: 6px; margin-top: 10px;
-  padding: 10px 16px; border-radius: 10px; border: 1px solid var(--accent);
-  color: var(--accent); text-decoration: none; font-weight: 600; font-size: .92rem;
+/* Mode sombre : faire ressortir les éléments marine sur fond marine */
+@media (prefers-color-scheme: dark) {
+  .carte { border-top-color: color-mix(in srgb, var(--couleur) 55%, #ffffff); }
+  .pastille { box-shadow: 0 0 0 3px var(--surface), 0 0 0 5px #ffffff; }
 }
-.btn-carte-officielle::after { content: "↗"; }
-.btn-carte-officielle:hover { background: var(--accent); color: #fff; }
-.erreur { color: #c0392b; font-size: .82rem; margin: 4px 0 0; }
-@media (prefers-color-scheme: dark) { .erreur { color: #ff8a7a; } }

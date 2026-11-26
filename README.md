@@ -40,6 +40,10 @@ Cette carte n'est donc **pas une preuve d'adhésion vérifiée**. Pour la rendre
 - **Microsoft 365 et Campus :** compte Microsoft `@lapiq.org` (déjà en place dans Moodle). L'adresse saisie dans le profil est transmise à Microsoft (`login_hint`) pour éviter de la retaper.
 - **Yapla :** compte membre Yapla distinct. La carte de membre officielle est une page HTML personnalisée dans Yapla ; l'application y renvoie par le bouton « Afficher ma carte officielle (Yapla) ».
 
+## Identité visuelle
+Couleurs tirées du logo : marine `#0b1c48`, rouge `#d21f30`, blanc (définies en tête de `styles.css`).
+Logos dans `icons/` : `logo-lapiq.png` (association) et `logo-campus.png` (Campus). Les icônes d'application (`icon-*.png`, `apple-touch-icon.png`, `favicon.png`) sont générées à partir du logo de l'association.
+
 ## Composants tiers
 - [qrcode-generator](https://github.com/kazuhikoarase/qrcode-generator) 1.4.4 (licence MIT), chargé depuis jsDelivr avec vérification d'intégrité (SRI) et mis en cache par l'application pour fonctionner hors ligne.
 
