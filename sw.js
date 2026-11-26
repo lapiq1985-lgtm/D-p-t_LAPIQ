@@ -1,7 +1,7 @@
 // Service worker : garde l'interface du portail disponible hors ligne.
-var CACHE = "lapiq-portail-v1";
+var CACHE = "lapiq-portail-v2";
 var FICHIERS = ["./", "index.html", "styles.css", "app.js", "config.js",
-  "manifest.webmanifest", "icons/icon.svg", "icons/icon-192.png", "icons/icon-512.png"];
+  "manifest.webmanifest", "vendor/qrcode.js", "icons/icon.svg", "icons/icon-192.png", "icons/icon-512.png"];
 
 self.addEventListener("install", function (e) {
   e.waitUntil(caches.open(CACHE).then(function (c) { return c.addAll(FICHIERS); }));

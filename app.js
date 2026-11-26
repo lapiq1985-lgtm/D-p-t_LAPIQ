@@ -1,6 +1,7 @@
 (function () {
   "use strict";
   var cfg = window.LAPIQ_CONFIG;
+  var cfgCarte = cfg.carteMembre || {};
   var CLE = "lapiq-profil";
 
   var ICONES = {
@@ -10,14 +11,31 @@
     site: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.5 3.8 5.5 3.8 9s-1.3 6.5-3.8 9c-2.5-2.5-3.8-5.5-3.8-9S9.5 5.5 12 3z"/></svg>'
   };
 
+  /* ---------- Stockage local ---------- */
   function lireProfil() {
     try { return JSON.parse(localStorage.getItem(CLE)) || {}; } catch (e) { return {}; }
   }
   function ecrireProfil(p) {
-    try { localStorage.setItem(CLE, JSON.stringify(p)); } catch (e) { /* stockage indisponible */ }
+    try { localStorage.setItem(CLE, JSON.stringify(p)); return true; }
+    catch (e) { return false; }
   }
 
-  // Ajoute les indices de connexion Microsoft (domaine / courriel)
+  /* ---------- Utilitaires DOM ---------- */
+  function el(tag, attrs, html) {
+    var n = document.createElement(tag);
+    for (var k in attrs || {}) n.setAttribute(k, attrs[k]);
+    if (html != null) n.innerHTML = html;
+    return n;
+  }
+  function texte(tag, attrs, t) { var n = el(tag, attrs); n.textContent = t == null ? "" : t; return n; }
+  function lienExterne(url, enfant) {
+    var a = el("a", { href: url, target: "_blank", rel: "noopener" });
+    if (typeof enfant === "string") a.textContent = enfant; else a.appendChild(enfant);
+    return a;
+  }
+  function ouvrir(dlg) { if (dlg.showModal) dlg.showModal(); else dlg.setAttribute("open", ""); }
+
+  /* ---------- Microsoft 365 ---------- */
   function urlM365(base, profil) {
     try {
       var u = new URL(base);
@@ -27,40 +45,131 @@
     } catch (e) { return base; }
   }
 
-  function el(tag, attrs, html) {
-    var n = document.createElement(tag);
-    for (var k in attrs || {}) n.setAttribute(k, attrs[k]);
-    if (html != null) n.innerHTML = html;
-    return n;
+  /* ---------- Carte de membre ---------- */
+  function aCarte(p) { return !!(p.nom && p.numero); }
+
+  function dateLocale(iso) {
+    var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso || "");
+    return m ? new Date(+m[1], +m[2] - 1, +m[3]) : null;
   }
-  function texte(tag, attrs, t) { var n = el(tag, attrs); n.textContent = t; return n; }
-
-  function lienExterne(url, enfant) {
-    var a = el("a", { href: url, target: "_blank", rel: "noopener" });
-    if (typeof enfant === "string") a.textContent = enfant; else a.appendChild(enfant);
-    return a;
+  function formaterDate(iso) {
+    var d = dateLocale(iso);
+    return d ? d.toLocaleDateString("fr-CA", { day: "numeric", month: "long", year: "numeric" }) : "—";
+  }
+  function statut(iso) {
+    var fin = dateLocale(iso);
+    if (!fin) return null;
+    var auj = new Date(); auj.setHours(0, 0, 0, 0);
+    var jours = Math.round((fin - auj) / 86400000);
+    if (jours < 0) return { classe: "expiree", libelle: "Expirée" };
+    if (jours <= (cfgCarte.joursAvertissement || 30))
+      return { classe: "bientot", libelle: jours === 0 ? "Expire aujourd'hui" : "Expire dans " + jours + " j" };
+    return { classe: "valide", libelle: "Valide" };
+  }
+  function contenuQR(p) {
+    if (cfgCarte.urlVerification) return cfgCarte.urlVerification + encodeURIComponent(p.numero);
+    return [cfg.organisation, "Membre : " + p.nom, "No : " + p.numero,
+      p.categorie ? "Catégorie : " + p.categorie : "",
+      p.expiration ? "Valide jusqu'au : " + p.expiration : ""].filter(Boolean).join("\n");
+  }
+  function svgQR(donnees) {
+    if (!window.qrcode) return "";
+    window.qrcode.stringToBytes = window.qrcode.stringToBytesFuncs["UTF-8"];
+    var qr = window.qrcode(0, "M");
+    qr.addData(donnees, "Byte");
+    qr.make();
+    return qr.createSvgTag({ cellSize: 4, margin: 0, scalable: true, alt: "Code QR de la carte de membre" });
+  }
+  function initiales(nom) {
+    return nom.split(/\s+/).filter(Boolean).slice(0, 2).map(function (m) { return m[0].toUpperCase(); }).join("");
   }
 
-  function rendre() {
-    var profil = lireProfil();
-    document.getElementById("titre").textContent = cfg.organisation;
-    document.getElementById("sous-titre").textContent = cfg.sousTitre;
-    document.getElementById("salutation").textContent =
-      profil.prenom ? "Bonjour " + profil.prenom + "!" : "Bonjour!";
+  function construireCarte(p, tag) {
+    var c = el(tag, { class: "carte-membre" });
+    if (tag === "button") {
+      c.type = "button";
+      c.setAttribute("aria-label", "Agrandir la carte de membre de " + p.nom);
+    }
 
+    var haut = el("div", { class: "cm-haut" });
+    var org = el("div", { class: "cm-org" });
+    org.appendChild(el("img", { src: "icons/icon.svg", alt: "" }));
+    org.appendChild(texte("span", {}, cfg.organisation));
+    haut.appendChild(org);
+    var st = statut(p.expiration);
+    haut.appendChild(st ? texte("span", { class: "statut " + st.classe }, st.libelle)
+                        : texte("span", { class: "cm-titre" }, cfgCarte.titre || "Carte de membre"));
+    c.appendChild(haut);
+
+    var ident = el("div", { class: "cm-identite" });
+    if (p.photo) ident.appendChild(el("img", { class: "cm-photo", src: p.photo, alt: "Photo de " + p.nom }));
+    else ident.appendChild(texte("span", { class: "cm-photo", "aria-hidden": "true" }, initiales(p.nom)));
+    var noms = el("div");
+    noms.appendChild(texte("p", { class: "cm-nom" }, p.nom));
+    if (p.categorie) noms.appendChild(texte("p", { class: "cm-cat" }, p.categorie));
+    ident.appendChild(noms);
+    c.appendChild(ident);
+
+    var dl = el("dl", { class: "cm-champs" });
+    [["N° de membre", p.numero], ["Valide jusqu'au", formaterDate(p.expiration)]].forEach(function (x) {
+      var d = el("div");
+      d.appendChild(texte("dt", {}, x[0]));
+      d.appendChild(texte("dd", {}, x[1]));
+      dl.appendChild(d);
+    });
+    c.appendChild(dl);
+
+    var qr = svgQR(contenuQR(p));
+    if (qr) c.appendChild(el("div", { class: "cm-qr" }, qr));
+
+    var pied = el("div", { class: "cm-pied" });
+    pied.appendChild(texte("span", {}, cfgCarte.titre || "Carte de membre"));
+    if (tag === "button") pied.appendChild(texte("span", { "aria-hidden": "true" }, "Toucher pour agrandir"));
+    c.appendChild(pied);
+    return c;
+  }
+
+  function rendreCarte(p) {
+    var zone = document.getElementById("zone-carte");
+    zone.innerHTML = "";
+    if (!aCarte(p)) {
+      var vide = el("div", { class: "carte-vide" });
+      vide.appendChild(texte("p", {}, "Ajoutez votre carte de membre pour l'avoir toujours sous la main, même sans Internet."));
+      var b = texte("button", { type: "button" }, "Ajouter ma carte");
+      b.addEventListener("click", ouvrirProfil);
+      vide.appendChild(b);
+      zone.appendChild(vide);
+    } else {
+      var carte = construireCarte(p, "button");
+      carte.addEventListener("click", function () {
+        var grande = document.getElementById("carte-grande");
+        grande.innerHTML = "";
+        grande.appendChild(construireCarte(p, "div"));
+        ouvrir(document.getElementById("carte-plein-ecran"));
+      });
+      zone.appendChild(carte);
+    }
+    if (cfgCarte.urlOfficielle) {
+      var a = lienExterne(cfgCarte.urlOfficielle, "Voir ma carte officielle sur Yapla");
+      a.className = "cm-lien";
+      zone.appendChild(a);
+    }
+  }
+
+  /* ---------- Services ---------- */
+  function rendreServices(profil) {
     var grille = document.getElementById("services");
     grille.innerHTML = "";
     cfg.services.forEach(function (s) {
       var carte = el("article", { class: "carte", style: "--couleur:" + s.couleur });
       var url = s.m365 ? urlM365(s.url, profil) : s.url;
 
+      var wrap = el("span"); wrap.style.display = "contents";
+      wrap.appendChild(el("span", { class: "pastille", "aria-hidden": "true" }, ICONES[s.icone] || ICONES.site));
       var corps = el("div");
       corps.appendChild(texte("h3", { class: "carte-nom" }, s.nom));
       corps.appendChild(texte("p", { class: "carte-desc" }, s.description));
-      var contenu = document.createDocumentFragment();
-      contenu.appendChild(el("span", { class: "pastille", "aria-hidden": "true" }, ICONES[s.icone] || ICONES.site));
-      contenu.appendChild(corps);
-      var wrap = el("span"); wrap.style.display = "contents"; wrap.appendChild(contenu);
+      wrap.appendChild(corps);
       var principal = lienExterne(url, wrap);
       principal.className = "carte-principal";
       principal.setAttribute("aria-label", s.nom + " — " + s.description);
@@ -77,6 +186,16 @@
       }
       grille.appendChild(carte);
     });
+  }
+
+  function rendre() {
+    var profil = lireProfil();
+    document.getElementById("titre").textContent = cfg.organisation;
+    document.getElementById("sous-titre").textContent = cfg.sousTitre;
+    var prenom = profil.prenom || (profil.nom || "").split(/\s+/)[0];
+    document.getElementById("salutation").textContent = prenom ? "Bonjour " + prenom + "!" : "Bonjour!";
+    rendreCarte(profil);
+    rendreServices(profil);
 
     var soutien = document.getElementById("soutien");
     soutien.innerHTML = "";
@@ -86,24 +205,58 @@
     }
   }
 
-  // Dialogue profil
+  /* ---------- Dialogue profil ---------- */
   var dlg = document.getElementById("profil");
-  document.getElementById("btn-profil").addEventListener("click", function () {
+  var CHAMPS = ["prenom", "courriel", "nom", "numero", "categorie", "expiration"];
+  var photoTemp = null;
+  var apercu = document.getElementById("apercu-photo");
+  var btnRetirer = document.getElementById("retirer-photo");
+
+  function afficherPhoto(src) {
+    photoTemp = src || null;
+    apercu.hidden = btnRetirer.hidden = !photoTemp;
+    if (photoTemp) apercu.src = photoTemp; else apercu.removeAttribute("src");
+  }
+  function ouvrirProfil() {
     var p = lireProfil();
-    document.getElementById("prenom").value = p.prenom || "";
-    document.getElementById("courriel").value = p.courriel || "";
-    if (dlg.showModal) dlg.showModal(); else dlg.setAttribute("open", "");
+    CHAMPS.forEach(function (c) { document.getElementById(c).value = p[c] || ""; });
+    document.getElementById("photo").value = "";
+    afficherPhoto(p.photo);
+    ouvrir(dlg);
+  }
+
+  // Réduit la photo (carré 240 px) pour qu'elle tienne dans le stockage local.
+  document.getElementById("photo").addEventListener("change", function (e) {
+    var f = e.target.files && e.target.files[0];
+    if (!f) return;
+    var img = new Image();
+    var url = URL.createObjectURL(f);
+    img.onload = function () {
+      var t = 240, cote = Math.min(img.width, img.height);
+      var cv = document.createElement("canvas"); cv.width = cv.height = t;
+      cv.getContext("2d").drawImage(img, (img.width - cote) / 2, (img.height - cote) / 2, cote, cote, 0, 0, t, t);
+      URL.revokeObjectURL(url);
+      afficherPhoto(cv.toDataURL("image/jpeg", 0.85));
+    };
+    img.onerror = function () { URL.revokeObjectURL(url); alert("Cette image n'a pas pu être lue."); };
+    img.src = url;
   });
+  btnRetirer.addEventListener("click", function () {
+    document.getElementById("photo").value = "";
+    afficherPhoto(null);
+  });
+
+  document.getElementById("btn-profil").addEventListener("click", ouvrirProfil);
   dlg.addEventListener("close", function () {
     if (dlg.returnValue !== "ok") return;
-    ecrireProfil({
-      prenom: document.getElementById("prenom").value.trim(),
-      courriel: document.getElementById("courriel").value.trim()
-    });
+    var p = {};
+    CHAMPS.forEach(function (c) { p[c] = document.getElementById(c).value.trim(); });
+    if (photoTemp) p.photo = photoTemp;
+    if (!ecrireProfil(p)) alert("Impossible d'enregistrer sur cet appareil (navigation privée?).");
     rendre();
   });
 
-  // Installation (PWA)
+  /* ---------- Installation (PWA) ---------- */
   var invite = null;
   var btnInstaller = document.getElementById("btn-installer");
   window.addEventListener("beforeinstallprompt", function (e) {

@@ -95,3 +95,64 @@ dialog button.secondaire { background: transparent; color: var(--texte); border:
 @media (max-width: 480px) {
   .sous-liens { padding-left: 18px; }
 }
+
+/* ---------- Carte de membre ---------- */
+#zone-carte { margin-bottom: 20px; }
+.carte-membre {
+  --c: #b3412b;
+  position: relative; display: grid; grid-template-columns: 1fr auto; gap: 14px;
+  width: 100%; max-width: 520px; padding: 18px; border-radius: 18px; border: 0;
+  background: linear-gradient(135deg, #b3412b 0%, #7e2818 100%); color: #fff;
+  box-shadow: 0 8px 24px rgba(126,40,24,.35); text-align: left; font: inherit; cursor: pointer;
+}
+.carte-membre:focus-visible { outline: 3px solid var(--texte); outline-offset: 3px; }
+.cm-haut { grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.cm-org { display: flex; align-items: center; gap: 8px; font-weight: 700; letter-spacing: .04em; }
+.cm-org img { width: 28px; height: 28px; border-radius: 7px; background: rgba(255,255,255,.15); }
+.cm-titre { font-size: .72rem; text-transform: uppercase; letter-spacing: .12em; opacity: .85; }
+.cm-identite { display: flex; gap: 12px; align-items: center; min-width: 0; }
+.cm-photo {
+  flex: none; width: 64px; height: 64px; border-radius: 12px; object-fit: cover;
+  background: rgba(255,255,255,.18); display: grid; place-items: center; font-weight: 700; font-size: 1.3rem;
+}
+.cm-nom { margin: 0; font-size: 1.15rem; line-height: 1.2; overflow-wrap: anywhere; }
+.cm-cat { margin: 2px 0 0; font-size: .85rem; opacity: .9; }
+.cm-champs { grid-column: 1; display: flex; gap: 18px; flex-wrap: wrap; margin: 0; }
+.cm-champs dt { font-size: .68rem; text-transform: uppercase; letter-spacing: .1em; opacity: .8; }
+.cm-champs dd { margin: 0; font-weight: 600; font-variant-numeric: tabular-nums; }
+.cm-qr { grid-column: 2; grid-row: 2 / span 2; align-self: center; background: #fff; border-radius: 10px; padding: 6px; line-height: 0; }
+.cm-qr svg { width: 88px; height: 88px; }
+.statut {
+  display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: .75rem; font-weight: 700;
+  background: #fff; color: #1d6b3a;
+}
+.statut.bientot { color: #8a5a00; }
+.statut.expiree { background: #2a0d07; color: #ffb4a5; }
+.cm-pied { grid-column: 1 / -1; display: flex; justify-content: space-between; gap: 8px; font-size: .78rem; opacity: .9; }
+.cm-lien { display: inline-block; margin-top: 8px; color: var(--accent); font-size: .9rem; }
+.carte-vide {
+  max-width: 520px; padding: 18px; border-radius: 18px; border: 2px dashed var(--bordure);
+  background: var(--surface); display: flex; gap: 12px; align-items: center; justify-content: space-between; flex-wrap: wrap;
+}
+.carte-vide p { margin: 0; color: var(--doux); }
+.carte-vide button { font: inherit; border: 0; border-radius: 10px; padding: 10px 16px; background: var(--accent); color: #fff; cursor: pointer; }
+
+/* Vue plein écran : carte agrandie pour présentation */
+dialog.plein-ecran { width: min(560px, calc(100vw - 16px)); padding: 16px; }
+dialog.plein-ecran .carte-membre { cursor: default; grid-template-columns: 1fr; box-shadow: none; }
+dialog.plein-ecran .cm-qr { grid-column: 1; grid-row: auto; justify-self: center; padding: 10px; }
+dialog.plein-ecran .cm-qr svg { width: min(240px, 60vw); height: min(240px, 60vw); }
+dialog.plein-ecran .cm-photo { width: 84px; height: 84px; }
+dialog.plein-ecran .cm-nom { font-size: 1.4rem; }
+.actions.centre { justify-content: center; }
+
+fieldset { border: 1px solid var(--bordure); border-radius: 12px; margin: 16px 0 0; padding: 4px 12px 12px; }
+legend { font-weight: 700; padding: 0 4px; }
+.photo-ligne { display: flex; align-items: center; gap: 8px; margin-top: 4px; }
+.photo-ligne input { flex: 1; min-width: 0; }
+#apercu-photo { width: 44px; height: 44px; border-radius: 8px; object-fit: cover; }
+dialog { max-height: calc(100dvh - 32px); overflow: auto; }
+
+@media (max-width: 400px) {
+  .cm-qr svg { width: 72px; height: 72px; }
+}

@@ -15,6 +15,18 @@ window.LAPIQ_CONFIG = {
 
   courrielSoutien: "", // ex. "soutien@lapiq.org" — À CONFIRMER
 
+  // Carte de membre affichée dans l'application
+  carteMembre: {
+    titre: "Carte de membre",
+    // Lien vers la carte officielle dans le portail membre Yapla
+    urlOfficielle: "https://lapiq.s1.yapla.com/fr/espace-membre/", // À CONFIRMER
+    // Si LAPIQ dispose d'une page de vérification, le code QR pointera vers
+    // cette adresse suivie du numéro de membre (ex. "https://www.lapiq.org/verifier?no=").
+    // Laisser vide : le code QR contient alors le nom, le numéro et la date d'expiration.
+    urlVerification: "",
+    joursAvertissement: 30 // affiche « expire bientôt » sous ce seuil
+  },
+
   services: [
     {
       id: "yapla",

@@ -33,6 +33,8 @@
       <p>Choisissez le service auquel vous souhaitez accéder.</p>
     </section>
 
+    <section id="zone-carte" aria-label="Carte de membre"></section>
+
     <section id="services" class="grille" aria-label="Services"></section>
 
     <section class="aide">
@@ -59,6 +61,25 @@
       <input id="prenom" autocomplete="given-name">
       <label for="courriel">Courriel LAPIQ (Microsoft 365)</label>
       <input id="courriel" type="email" autocomplete="email" placeholder="prenom.nom@lapiq.org">
+
+      <fieldset>
+        <legend>Carte de membre</legend>
+        <p class="note">Recopiez les informations de votre carte officielle (portail Yapla).</p>
+        <label for="nom">Nom complet</label>
+        <input id="nom" autocomplete="name">
+        <label for="numero">Numéro de membre</label>
+        <input id="numero" inputmode="text" autocomplete="off">
+        <label for="categorie">Catégorie d'adhésion</label>
+        <input id="categorie" placeholder="ex. Membre instructeur">
+        <label for="expiration">Valide jusqu'au</label>
+        <input id="expiration" type="date">
+        <label for="photo">Photo (facultatif)</label>
+        <div class="photo-ligne">
+          <img id="apercu-photo" alt="" hidden>
+          <input id="photo" type="file" accept="image/*">
+          <button type="button" id="retirer-photo" class="secondaire" hidden>Retirer</button>
+        </div>
+      </fieldset>
       <p class="note">Ces informations restent sur cet appareil. Le courriel sert uniquement à préremplir la connexion Microsoft 365.</p>
       <div class="actions">
         <button value="annuler" class="secondaire">Annuler</button>
@@ -67,6 +88,14 @@
     </form>
   </dialog>
 
+  <dialog id="carte-plein-ecran" class="plein-ecran" aria-label="Carte de membre">
+    <div id="carte-grande"></div>
+    <form method="dialog" class="actions centre">
+      <button>Fermer</button>
+    </form>
+  </dialog>
+
+  <script src="vendor/qrcode.js"></script>
   <script src="config.js"></script>
   <script src="app.js"></script>
 </body>
