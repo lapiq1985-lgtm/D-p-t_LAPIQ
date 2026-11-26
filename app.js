@@ -150,8 +150,8 @@
       zone.appendChild(carte);
     }
     if (cfgCarte.urlOfficielle) {
-      var a = lienExterne(cfgCarte.urlOfficielle, "Voir ma carte officielle sur Yapla");
-      a.className = "cm-lien";
+      var a = lienExterne(cfgCarte.urlOfficielle, "Afficher ma carte officielle (Yapla)");
+      a.className = "btn-carte-officielle";
       zone.appendChild(a);
     }
   }
@@ -220,6 +220,7 @@
   function ouvrirProfil() {
     var p = lireProfil();
     CHAMPS.forEach(function (c) { document.getElementById(c).value = p[c] || ""; });
+    erreurCourriel.hidden = true;
     document.getElementById("photo").value = "";
     afficherPhoto(p.photo);
     ouvrir(dlg);
@@ -247,10 +248,20 @@
   });
 
   document.getElementById("btn-profil").addEventListener("click", ouvrirProfil);
+
+  // L'adresse doit appartenir au domaine Microsoft de LAPIQ.
+  var erreurCourriel = document.getElementById("erreur-courriel");
+  document.getElementById("enregistrer").addEventListener("click", function (e) {
+    var v = document.getElementById("courriel").value.trim().toLowerCase();
+    var ok = !v || !cfg.domaineM365 || v.slice(-(cfg.domaineM365.length + 1)) === "@" + cfg.domaineM365;
+    erreurCourriel.hidden = ok;
+    if (!ok) { e.preventDefault(); document.getElementById("courriel").focus(); }
+  });
   dlg.addEventListener("close", function () {
     if (dlg.returnValue !== "ok") return;
     var p = {};
     CHAMPS.forEach(function (c) { p[c] = document.getElementById(c).value.trim(); });
+    p.courriel = p.courriel.toLowerCase();
     if (photoTemp) p.photo = photoTemp;
     if (!ecrireProfil(p)) alert("Impossible d'enregistrer sur cet appareil (navigation privée?).");
     rendre();

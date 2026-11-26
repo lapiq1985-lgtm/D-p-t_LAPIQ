@@ -156,3 +156,13 @@ dialog { max-height: calc(100dvh - 32px); overflow: auto; }
 @media (max-width: 400px) {
   .cm-qr svg { width: 72px; height: 72px; }
 }
+
+.btn-carte-officielle {
+  display: inline-flex; align-items: center; gap: 6px; margin-top: 10px;
+  padding: 10px 16px; border-radius: 10px; border: 1px solid var(--accent);
+  color: var(--accent); text-decoration: none; font-weight: 600; font-size: .92rem;
+}
+.btn-carte-officielle::after { content: "↗"; }
+.btn-carte-officielle:hover { background: var(--accent); color: #fff; }
+.erreur { color: #c0392b; font-size: .82rem; margin: 4px 0 0; }
+@media (prefers-color-scheme: dark) { .erreur { color: #ff8a7a; } }

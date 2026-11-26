@@ -20,12 +20,15 @@ En haut de l'écran d'accueil : la **carte de membre** du membre.
 - Mode sombre automatique, accessible au clavier.
 
 ## Configuration — à faire avant la mise en ligne
-Toutes les adresses sont dans **`config.js`**. Les valeurs marquées `À CONFIRMER` sont des suppositions :
-- l'adresse du portail membre Yapla de LAPIQ ;
-- l'adresse du Campus Moodle (ex. `https://campus.lapiq.org`) ;
-- l'adresse du site de LAPIQ ;
-- le domaine Microsoft 365 et le courriel de soutien ;
-- `carteMembre.urlOfficielle` (carte dans Yapla) et, si possible, `carteMembre.urlVerification`.
+Toutes les adresses sont dans **`config.js`**.
+
+Confirmé : site `https://lapiq.org`, Campus `https://campus.lapiq.org`, domaine Microsoft `lapiq.org`.
+Chaque membre se connecte à Microsoft 365 **et** au Campus avec son adresse `@lapiq.org` (authentification Microsoft). L'application refuse toute autre adresse dans le profil.
+
+Reste à fournir (marqué `À CONFIRMER`) :
+- l'adresse du portail membre Yapla et celle de la page de la **carte de membre** (`carteMembre.urlOfficielle`) ;
+- le courriel de soutien ;
+- si possible, `carteMembre.urlVerification`.
 
 ### À propos de la carte de membre
 Pour l'instant, le membre recopie lui-même les informations de sa carte Yapla dans « Mon profil ». Elles restent sur son appareil.
@@ -33,10 +36,9 @@ Cette carte n'est donc **pas une preuve d'adhésion vérifiée**. Pour la rendre
 1. une page de vérification publique (ex. `https://www.lapiq.org/verifier?no=`) indiquée dans `urlVerification` : le code QR y mène directement ;
 2. une synchronisation automatique avec Yapla (nécessite un accès API ou un export fourni par Yapla, et un petit serveur).
 
-## Connexion unique (recommandé)
-Pour qu'une seule connexion Microsoft donne accès au Campus, activer dans Moodle :
-*Administration du site → Serveur → Services OAuth 2 → Microsoft*, puis le plugin d'authentification **OAuth 2**.
-Yapla utilise son propre compte membre.
+## Connexion
+- **Microsoft 365 et Campus :** compte Microsoft `@lapiq.org` (déjà en place dans Moodle). L'adresse saisie dans le profil est transmise à Microsoft (`login_hint`) pour éviter de la retaper.
+- **Yapla :** compte membre Yapla distinct. La carte de membre officielle est une page HTML personnalisée dans Yapla ; l'application y renvoie par le bouton « Afficher ma carte officielle (Yapla) ».
 
 ## Composants tiers
 - `vendor/qrcode.js` : [qrcode-generator](https://github.com/kazuhikoarase/qrcode-generator) 1.4.4 (licence MIT), inclus localement pour fonctionner hors ligne.

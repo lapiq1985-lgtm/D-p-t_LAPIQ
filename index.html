@@ -40,9 +40,9 @@
     <section class="aide">
       <h3>Besoin d'aide pour vous connecter?</h3>
       <ul>
-        <li><strong>Microsoft 365 :</strong> utilisez votre adresse courriel LAPIQ.</li>
-        <li><strong>Campus LAPIQ :</strong> si l'option « Microsoft » apparaît sur la page de connexion Moodle, utilisez-la avec votre compte LAPIQ.</li>
-        <li><strong>Yapla :</strong> utilisez le courriel associé à votre adhésion. Le lien « Mot de passe oublié » vous permet de le réinitialiser.</li>
+        <li><strong>Microsoft 365 et Campus LAPIQ :</strong> un seul compte, votre adresse <strong>@lapiq.org</strong> et son mot de passe Microsoft. Sur la page de connexion du Campus, choisissez le bouton « Microsoft ».</li>
+        <li><strong>Une fois connecté à Microsoft 365</strong>, le Campus vous reconnaît généralement sans redemander le mot de passe.</li>
+        <li><strong>Yapla (carte de membre, adhésion) :</strong> utilisez le courriel associé à votre adhésion. Le lien « Mot de passe oublié » vous permet de le réinitialiser.</li>
       </ul>
       <p id="soutien"></p>
     </section>
@@ -59,8 +59,9 @@
       <h2>Mon profil</h2>
       <label for="prenom">Prénom</label>
       <input id="prenom" autocomplete="given-name">
-      <label for="courriel">Courriel LAPIQ (Microsoft 365)</label>
+      <label for="courriel">Adresse @lapiq.org (Microsoft 365 et Campus)</label>
       <input id="courriel" type="email" autocomplete="email" placeholder="prenom.nom@lapiq.org">
+      <p id="erreur-courriel" class="erreur" role="alert" hidden>L'adresse doit se terminer par @lapiq.org.</p>
 
       <fieldset>
         <legend>Carte de membre</legend>
@@ -80,7 +81,7 @@
           <button type="button" id="retirer-photo" class="secondaire" hidden>Retirer</button>
         </div>
       </fieldset>
-      <p class="note">Ces informations restent sur cet appareil. Le courriel sert uniquement à préremplir la connexion Microsoft 365.</p>
+      <p class="note">Ces informations restent sur cet appareil. L'adresse sert uniquement à préremplir la connexion Microsoft.</p>
       <div class="actions">
         <button value="annuler" class="secondaire">Annuler</button>
         <button value="ok" id="enregistrer">Enregistrer</button>
