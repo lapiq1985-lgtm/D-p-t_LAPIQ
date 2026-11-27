@@ -1,9 +1,9 @@
 // Service worker : garde le portail (et la carte de membre) disponible hors ligne.
-var CACHE = "lapiq-portail-v7";
+var CACHE = "lapiq-portail-v8";
 var QR = "https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js";
 var FICHIERS = ["./", "index.html", "styles.css", "app.js", "config.js",
   "manifest.webmanifest", "icons/logo-lapiq.png", "icons/logo-campus.png", "icons/favicon.png",
-  "icons/apple-touch-icon.png", "icons/icon-192.png", "icons/icon-512.png", "icons/icon-maskable-512.png"];
+  "icons/apple-touch-icon.png", "icons/icon-192.png", "icons/icon-maskable-192.png"];
 
 self.addEventListener("install", function (e) {
   e.waitUntil(caches.open(CACHE).then(function (c) {
