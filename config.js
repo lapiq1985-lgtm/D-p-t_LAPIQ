@@ -1,9 +1,8 @@
 /*
  * Configuration du portail LAPIQ
  * ------------------------------------------------------------
- * Modifiez uniquement ce fichier pour adapter les liens.
- * Les valeurs marquées « À CONFIRMER » doivent être validées
- * par l'administration de LAPIQ avant la mise en ligne.
+ * Modifiez uniquement ce fichier pour adapter les liens et les textes.
+ * Source des liens : https://lapiq.org (novembre 2026).
  */
 window.LAPIQ_CONFIG = {
   organisation: "LAPIQ",
@@ -11,35 +10,56 @@ window.LAPIQ_CONFIG = {
   sousTitre: "Portail des membres",
   logo: "icons/logo-lapiq.png",
 
-  // Domaine Microsoft 365 de l'organisation. Chaque membre possède une
-  // adresse @lapiq.org qui donne accès à Microsoft 365 ET au Campus (Moodle).
+  // Les membres Instructeur, Enseignant et Étudiant reçoivent une adresse @lapiq.org
+  // (Microsoft 365). La même adresse sert d'identifiant sur le Campus (Moodle).
   domaineM365: "lapiq.org",
 
-  courrielSoutien: "", // ex. "soutien@lapiq.org" — À CONFIRMER
+  courrielSoutien: "info@lapiq.org",
+  // Lien « Signaler un problème » du Campus (repris de lapiq.org/contact)
+  courrielCampus: "mailto:info@lapiq.org?subject=Acc%C3%A8s%20au%20Campus%20LAPIQ",
+  courrielAdhesion: "mailto:info@lapiq.org?subject=Question%20sur%20mon%20adh%C3%A9sion",
+  confidentialite: "https://lapiq.org/confidentialite/",
+  adresse: "6, 1re Avenue Ouest, Sainte-Anne-des-Monts (Québec) G4V 1B5",
+
+  // Espace membres Yapla
+  yapla: {
+    connexion: "https://lapiq.s1.yapla.com/fr/espace-membres/authentication/",
+    adhesion: "https://lapiq.s1.yapla.com/fr/espace-membres/adhesion/"
+  },
 
   // Carte de membre affichée dans l'application
   carteMembre: {
     titre: "Carte de membre",
-    // Page Yapla où s'affiche la carte de membre officielle (HTML créé dans Yapla)
-    urlOfficielle: "https://lapiq.s1.yapla.com/fr/espace-membre/", // À CONFIRMER : adresse exacte de la page de la carte
-    // Si LAPIQ dispose d'une page de vérification, le code QR pointera vers
+    // Page où le membre consulte sa carte officielle (espace membres Yapla)
+    urlOfficielle: "https://lapiq.s1.yapla.com/fr/espace-membres/authentication/",
+    // Si LAPIQ crée une page de vérification, le code QR pointera vers
     // cette adresse suivie du numéro de membre (ex. "https://lapiq.org/verifier?no=").
     // Laisser vide : le code QR contient alors le nom, le numéro et la date d'expiration.
     urlVerification: "",
-    joursAvertissement: 30 // affiche « expire bientôt » sous ce seuil
+    joursAvertissement: 30, // affiche « expire bientôt » sous ce seuil
+    // Catégories d'adhésion 2026-2027 (lapiq.org/devenir-membre).
+    // « fin » sert à préremplir la date d'expiration.
+    categories: [
+      { nom: "Membre régulier — Instructeur ENPQ", fin: "2027-06-30" },
+      { nom: "Membre régulier — Enseignant IPIQ", fin: "2027-08-31" },
+      { nom: "Membre étudiant", fin: "2027-08-31" },
+      { nom: "Membre associé", fin: "2027-04-30" },
+      { nom: "Membre honoraire", fin: "" }
+    ]
   },
 
   services: [
     {
       id: "yapla",
-      nom: "Mon dossier Yapla",
-      description: "Adhésion, inscriptions, factures et profil de membre.",
+      nom: "Mon dossier de membre",
+      description: "Adhésion, renouvellement, paiements et profil (espace membres Yapla).",
       couleur: "#d21f30",
       icone: "yapla",
-      url: "https://lapiq.s1.yapla.com/fr/espace-membre/", // À CONFIRMER
+      url: "https://lapiq.s1.yapla.com/fr/espace-membres/authentication/",
       liens: [
-        { nom: "Mon profil", url: "https://lapiq.s1.yapla.com/fr/espace-membre/" },
-        { nom: "Mes factures", url: "https://lapiq.s1.yapla.com/fr/espace-membre/" }
+        { nom: "Se connecter", url: "https://lapiq.s1.yapla.com/fr/espace-membres/authentication/" },
+        { nom: "Adhérer ou renouveler", url: "https://lapiq.s1.yapla.com/fr/espace-membres/adhesion/" },
+        { nom: "Catégories et tarifs", url: "https://lapiq.org/devenir-membre/" }
       ]
     },
     {
@@ -59,26 +79,62 @@ window.LAPIQ_CONFIG = {
     {
       id: "campus",
       nom: "Campus LAPIQ",
-      description: "Vos formations en ligne (connexion avec votre compte @lapiq.org).",
+      description: "Vos formations en ligne (connexion avec votre adresse @lapiq.org).",
       couleur: "#0b1c48",
       icone: "campus",
       logo: "icons/logo-campus.png",
-      url: "https://campus.lapiq.org/my/courses.php",
+      // campus.lapiq.org redirige vers lapiq.moodlecloud.com (Moodle hébergé par MoodleCloud) ;
+      // les liens directs doivent donc viser lapiq.moodlecloud.com.
+      url: "https://lapiq.moodlecloud.com/my/courses.php",
       liens: [
-        { nom: "Tableau de bord", url: "https://campus.lapiq.org/my/" },
-        { nom: "Calendrier", url: "https://campus.lapiq.org/calendar/view.php" },
-        { nom: "Mes notes", url: "https://campus.lapiq.org/grade/report/overview/index.php" }
+        { nom: "Mes cours", url: "https://lapiq.moodlecloud.com/my/courses.php" },
+        { nom: "Calendrier", url: "https://lapiq.moodlecloud.com/calendar/view.php" },
+        { nom: "Mes notes", url: "https://lapiq.moodlecloud.com/grade/report/overview/index.php" },
+        { nom: "Appli Moodle", url: "https://download.moodle.org/mobile/" },
+        { nom: "Signaler un problème", url: "mailto:info@lapiq.org?subject=Acc%C3%A8s%20au%20Campus%20LAPIQ" }
       ]
     },
     {
       id: "site",
       nom: "Site de LAPIQ",
-      description: "Nouvelles, formations offertes et informations.",
+      description: "Actualités, ressources pédagogiques et formations.",
       couleur: "#d21f30",
       icone: "site",
       logo: "icons/logo-lapiq.png",
       url: "https://lapiq.org/",
+      liens: [
+        { nom: "Actualités", url: "https://lapiq.org/actualites/" },
+        { nom: "Ressources", url: "https://lapiq.org/actualites/#ressources" },
+        { nom: "Formation", url: "https://lapiq.org/formation/" },
+        { nom: "Contact", url: "https://lapiq.org/contact/" }
+      ]
+    },
+    {
+      id: "boutique",
+      nom: "Boutique LAPIQ",
+      description: "Articles et produits de l'association.",
+      couleur: "#0b1c48",
+      icone: "boutique",
+      url: "https://store.lapiq.org/",
       liens: []
+    },
+    {
+      id: "balado",
+      nom: "Balado Le Fall In",
+      description: "Des instructeurs parlent formation, terrain, normes et jugement.",
+      couleur: "#d21f30",
+      icone: "balado",
+      url: "https://open.spotify.com/show/0FVQP3AETS2w5Bj4pL5IGN",
+      liens: [
+        { nom: "Spotify", url: "https://open.spotify.com/show/0FVQP3AETS2w5Bj4pL5IGN" },
+        { nom: "Apple Podcasts", url: "https://podcasts.apple.com/us/podcast/le-fall-in/id6809077124" }
+      ]
     }
+  ],
+
+  reseaux: [
+    { nom: "Facebook", url: "https://www.facebook.com/LAPIQ" },
+    { nom: "LinkedIn", url: "https://www.linkedin.com/company/lapiq" },
+    { nom: "X", url: "https://x.com/LAPIQ_1985" }
   ]
 };

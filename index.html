@@ -29,6 +29,14 @@
    </div>
   </header>
 
+  <div id="bandeau-hors-ligne" class="bandeau bandeau-info" role="status" hidden>
+    Hors ligne — votre carte de membre reste disponible.
+  </div>
+  <div id="bandeau-maj" class="bandeau bandeau-maj" role="status" hidden>
+    Une nouvelle version du portail est disponible.
+    <button type="button" id="btn-maj">Actualiser</button>
+  </div>
+
   <main>
     <section class="accueil">
       <h2 id="salutation">Bonjour</h2>
@@ -42,18 +50,29 @@
     <section class="aide">
       <h3>Besoin d'aide pour vous connecter?</h3>
       <ul>
-        <li><strong>Microsoft 365 et Campus LAPIQ :</strong> un seul compte, votre adresse <strong>@lapiq.org</strong> et son mot de passe Microsoft. Sur la page de connexion du Campus, choisissez le bouton « Microsoft ».</li>
-        <li><strong>Une fois connecté à Microsoft 365</strong>, le Campus vous reconnaît généralement sans redemander le mot de passe.</li>
-        <li><strong>Yapla (carte de membre, adhésion) :</strong> utilisez le courriel associé à votre adhésion. Le lien « Mot de passe oublié » vous permet de le réinitialiser.</li>
+        <li><strong>Microsoft 365 :</strong> connectez-vous avec votre adresse <strong>@lapiq.org</strong> et son mot de passe Microsoft.</li>
+        <li><strong>Campus LAPIQ :</strong> sur la page « Connexion à L'Association des pompiers instructeurs du Québec », entrez votre adresse <strong>@lapiq.org</strong> (ou votre nom d'utilisateur) et votre mot de passe du Campus. En cas d'oubli, utilisez « Mot de passe oublié ? ». Sur téléphone, l'appli Moodle fonctionne aussi : adresse du site <strong>campus.lapiq.org</strong>.</li>
+        <li><strong>Qui reçoit une adresse @lapiq.org?</strong> Les membres Instructeur ENPQ, Enseignant IPIQ et Étudiant (licence Microsoft 365 Basic). Les membres associés ont accès au Campus. Les informations d'accès sont envoyées par courriel une fois l'adhésion validée.</li>
+        <li><strong>Espace membres (Yapla) :</strong> utilisez le courriel associé à votre adhésion. Le lien « Mot de passe oublié » vous permet de le réinitialiser.</li>
       </ul>
+      <p class="liens-aide">
+        <a id="lien-campus" href="#">Problème de connexion au Campus</a>
+        <a id="lien-adhesion" href="#">Question sur mon adhésion</a>
+      </p>
       <p id="soutien"></p>
     </section>
 
-    <button id="btn-installer" class="btn-installer" hidden>Installer l'application</button>
+    <div class="actions-bas">
+      <button id="btn-installer" class="btn-installer" type="button" hidden>Installer l'application</button>
+      <button id="btn-partager" class="btn-secondaire" type="button">Partager le portail</button>
+    </div>
   </main>
 
   <footer class="pied">
+    <p id="reseaux" class="reseaux" aria-label="LAPIQ sur les réseaux sociaux"></p>
     <p id="nom-complet"></p>
+    <p id="adresse"></p>
+    <p><a id="lien-confidentialite" href="#">Politique de confidentialité</a></p>
     <p>Les liens s'ouvrent dans un nouvel onglet. Aucun mot de passe n'est conservé par ce portail.</p>
   </footer>
 
@@ -74,7 +93,8 @@
         <label for="numero">Numéro de membre</label>
         <input id="numero" inputmode="text" autocomplete="off">
         <label for="categorie">Catégorie d'adhésion</label>
-        <input id="categorie" placeholder="ex. Membre instructeur">
+        <input id="categorie" list="liste-categories" placeholder="Choisir ou écrire">
+        <datalist id="liste-categories"></datalist>
         <label for="expiration">Valide jusqu'au</label>
         <input id="expiration" type="date">
         <label for="photo">Photo (facultatif)</label>
@@ -86,11 +106,27 @@
       </fieldset>
       <p class="note">Ces informations restent sur cet appareil. L'adresse sert uniquement à préremplir la connexion Microsoft.</p>
       <div class="actions">
+        <button type="button" id="btn-effacer" class="lien-danger">Effacer mes informations</button>
         <button value="annuler" class="secondaire">Annuler</button>
         <button value="ok" id="enregistrer">Enregistrer</button>
       </div>
     </form>
   </dialog>
+
+  <dialog id="guide-ios" aria-labelledby="titre-guide-ios">
+    <h2 id="titre-guide-ios">Installer sur iPhone ou iPad</h2>
+    <ol class="etapes">
+      <li>Ouvrez ce portail dans <strong>Safari</strong>.</li>
+      <li>Touchez le bouton <strong>Partager</strong>
+        <svg class="ico-ios" viewBox="0 0 24 24" aria-label="(carré avec une flèche vers le haut)"><path d="M12 3v12M7 8l5-5 5 5"/><path d="M5 12v8h14v-8"/></svg>
+        en bas de l'écran.</li>
+      <li>Choisissez <strong>« Sur l'écran d'accueil »</strong>, puis <strong>Ajouter</strong>.</li>
+    </ol>
+    <p class="note">L'icône LAPIQ apparaîtra avec vos autres applications. Votre carte de membre restera accessible même sans Internet.</p>
+    <form method="dialog" class="actions centre"><button>J'ai compris</button></form>
+  </dialog>
+
+  <div id="toast" class="toast" role="status" hidden></div>
 
   <dialog id="carte-plein-ecran" class="plein-ecran" aria-label="Carte de membre">
     <div id="carte-grande"></div>

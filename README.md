@@ -13,7 +13,10 @@ En haut de l'écran d'accueil : la **carte de membre** du membre.
 
 ## Fonctionnalités
 - **Carte de membre** : nom, photo, numéro, catégorie, date d'expiration, statut (Valide / Expire bientôt / Expirée) et code QR. Toucher la carte l'agrandit pour la présenter. Elle reste disponible hors ligne, avec un lien vers la carte officielle dans Yapla.
-- Installable sur téléphone (Android : bouton « Installer » ; iPhone : Partager → « Sur l'écran d'accueil ») et sur ordinateur.
+- Installable sur téléphone (Android : bouton « Installer » ; iPhone : bouton « Installer » qui affiche le guide Partager → « Sur l'écran d'accueil ») et sur ordinateur.
+- Bouton « Renouveler » qui apparaît 30 jours avant l'expiration de la carte (lien vers l'adhésion Yapla) ; date d'expiration suggérée selon la catégorie.
+- Services : dossier de membre Yapla, Microsoft 365, Campus, site de LAPIQ, boutique, balado *Le Fall In*; réseaux sociaux et coordonnées en pied de page.
+- Bandeau « hors ligne », avis de nouvelle version, bouton « Partager le portail », effacement des données du profil.
 - Fonctionne hors ligne pour l'interface (les services eux-mêmes demandent Internet).
 - Profil local (prénom + courriel) : le courriel préremplit la connexion Microsoft 365 (`login_hint`). Sinon, `domain_hint` dirige vers la page de connexion de l'organisation.
 - Aucun mot de passe n'est stocké : chaque service garde sa propre connexion sécurisée.
@@ -25,10 +28,11 @@ Toutes les adresses sont dans **`config.js`**.
 Confirmé : site `https://lapiq.org`, Campus `https://campus.lapiq.org`, domaine Microsoft `lapiq.org`.
 Chaque membre se connecte à Microsoft 365 **et** au Campus avec son adresse `@lapiq.org` (authentification Microsoft). L'application refuse toute autre adresse dans le profil.
 
-Reste à fournir (marqué `À CONFIRMER`) :
-- l'adresse du portail membre Yapla et celle de la page de la **carte de membre** (`carteMembre.urlOfficielle`) ;
-- le courriel de soutien ;
-- si possible, `carteMembre.urlVerification`.
+Les liens Yapla, le courriel de soutien (info@lapiq.org), les catégories d'adhésion, la boutique, le balado et les réseaux sociaux proviennent de lapiq.org.
+
+Reste à préciser :
+- l'adresse exacte de la page de la **carte de membre** dans Yapla (`carteMembre.urlOfficielle` pointe pour l'instant vers la connexion à l'espace membres) ;
+- si possible, `carteMembre.urlVerification` (page publique de vérification d'un numéro de membre).
 
 ### À propos de la carte de membre
 Pour l'instant, le membre recopie lui-même les informations de sa carte Yapla dans « Mon profil ». Elles restent sur son appareil.
@@ -37,7 +41,8 @@ Cette carte n'est donc **pas une preuve d'adhésion vérifiée**. Pour la rendre
 2. une synchronisation automatique avec Yapla (nécessite un accès API ou un export fourni par Yapla, et un petit serveur).
 
 ## Connexion
-- **Microsoft 365 et Campus :** compte Microsoft `@lapiq.org` (déjà en place dans Moodle). L'adresse saisie dans le profil est transmise à Microsoft (`login_hint`) pour éviter de la retaper.
+- **Microsoft 365 :** adresse `@lapiq.org` (Instructeur, Enseignant, Étudiant). L'adresse saisie dans le profil est transmise à Microsoft (`login_hint`) pour éviter de la retaper.
+- **Campus :** `campus.lapiq.org` redirige vers `lapiq.moodlecloud.com` (MoodleCloud). La page de connexion demande un nom d'utilisateur ou courriel et un mot de passe ; elle n'offre pas de bouton Microsoft. Les liens directs du portail visent donc `lapiq.moodlecloud.com`.
 - **Yapla :** compte membre Yapla distinct. La carte de membre officielle est une page HTML personnalisée dans Yapla ; l'application y renvoie par le bouton « Afficher ma carte officielle (Yapla) ».
 
 ## Identité visuelle

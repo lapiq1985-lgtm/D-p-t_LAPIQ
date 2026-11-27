@@ -8,6 +8,8 @@
     yapla: '<svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="11" r="2.5"/><path d="M5.5 17c.6-2 2-3 3.5-3s2.9 1 3.5 3M14 9h4M14 13h4"/></svg>',
     m365: '<svg viewBox="0 0 24 24"><rect x="3" y="3" width="8" height="8" rx="1"/><rect x="13" y="3" width="8" height="8" rx="1"/><rect x="3" y="13" width="8" height="8" rx="1"/><rect x="13" y="13" width="8" height="8" rx="1"/></svg>',
     campus: '<svg viewBox="0 0 24 24"><path d="M2 9l10-5 10 5-10 5z"/><path d="M6 11v5c0 1.5 2.7 3 6 3s6-1.5 6-3v-5M22 9v6"/></svg>',
+    boutique: '<svg viewBox="0 0 24 24"><path d="M5 8h14l-1.2 12H6.2z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg>',
+    balado: '<svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3M8 21h8"/></svg>',
     site: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.5 3.8 5.5 3.8 9s-1.3 6.5-3.8 9c-2.5-2.5-3.8-5.5-3.8-9S9.5 5.5 12 3z"/></svg>'
   };
 
@@ -148,6 +150,12 @@
         ouvrir(document.getElementById("carte-plein-ecran"));
       });
       zone.appendChild(carte);
+      var st = statut(p.expiration);
+      if (st && st.classe !== "valide" && cfg.yapla && cfg.yapla.adhesion) {
+        var r = lienExterne(cfg.yapla.adhesion, st.classe === "expiree" ? "Renouveler mon adhésion" : "Renouveler maintenant");
+        r.className = "btn-renouveler";
+        zone.appendChild(r);
+      }
     }
     if (cfgCarte.urlOfficielle) {
       var a = lienExterne(cfgCarte.urlOfficielle, "Afficher ma carte officielle (Yapla)");
@@ -199,6 +207,17 @@
     document.getElementById("salutation").textContent = prenom ? "Bonjour " + prenom + "!" : "Bonjour!";
     rendreCarte(profil);
     rendreServices(profil);
+
+    // Pied de page et liens d'aide
+    document.getElementById("adresse").textContent = cfg.adresse || "";
+    var lc = document.getElementById("lien-confidentialite");
+    if (cfg.confidentialite) { lc.href = cfg.confidentialite; lc.target = "_blank"; lc.rel = "noopener"; } else lc.parentNode.hidden = true;
+    var lcamp = document.getElementById("lien-campus"), ladh = document.getElementById("lien-adhesion");
+    if (cfg.courrielCampus) lcamp.href = cfg.courrielCampus; else lcamp.hidden = true;
+    if (cfg.courrielAdhesion) ladh.href = cfg.courrielAdhesion; else ladh.hidden = true;
+    var res = document.getElementById("reseaux");
+    res.innerHTML = "";
+    (cfg.reseaux || []).forEach(function (r) { res.appendChild(lienExterne(r.url, r.nom)); });
 
     var soutien = document.getElementById("soutien");
     soutien.innerHTML = "";
@@ -252,6 +271,16 @@
 
   document.getElementById("btn-profil").addEventListener("click", ouvrirProfil);
 
+  // Catégories d'adhésion : liste de choix et date d'expiration suggérée
+  var categories = cfgCarte.categories || [];
+  var liste = document.getElementById("liste-categories");
+  categories.forEach(function (c) { var o = document.createElement("option"); o.value = c.nom; liste.appendChild(o); });
+  document.getElementById("categorie").addEventListener("change", function (e) {
+    var exp = document.getElementById("expiration");
+    var c = categories.filter(function (x) { return x.nom === e.target.value; })[0];
+    if (c && c.fin && !exp.value) exp.value = c.fin;
+  });
+
   // L'adresse doit appartenir au domaine Microsoft de LAPIQ.
   var erreurCourriel = document.getElementById("erreur-courriel");
   document.getElementById("enregistrer").addEventListener("click", function (e) {
@@ -270,19 +299,80 @@
     rendre();
   });
 
-  /* ---------- Installation (PWA) ---------- */
+  /* ---------- Message bref ---------- */
+  var toast = document.getElementById("toast"), minuterie;
+  function message(t) {
+    toast.textContent = t; toast.hidden = false;
+    clearTimeout(minuterie);
+    minuterie = setTimeout(function () { toast.hidden = true; }, 3000);
+  }
+
+  /* ---------- Effacer les informations ---------- */
+  document.getElementById("btn-effacer").addEventListener("click", function () {
+    if (!confirm("Effacer votre profil et votre carte de membre de cet appareil?")) return;
+    try { localStorage.removeItem(CLE); } catch (e) { /* rien à effacer */ }
+    dlg.close("annuler");
+    rendre();
+    message("Vos informations ont été effacées de cet appareil.");
+  });
+
+  /* ---------- Installation ---------- */
+  var autonome = window.matchMedia("(display-mode: standalone)").matches || navigator.standalone === true;
+  var ios = /iphone|ipad|ipod/i.test(navigator.userAgent) ||
+            (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
   var invite = null;
   var btnInstaller = document.getElementById("btn-installer");
+  if (!autonome && ios) btnInstaller.hidden = false; // iPhone : guide pas à pas
   window.addEventListener("beforeinstallprompt", function (e) {
     e.preventDefault(); invite = e; btnInstaller.hidden = false;
   });
   btnInstaller.addEventListener("click", function () {
-    if (!invite) return;
-    invite.prompt(); invite = null; btnInstaller.hidden = true;
+    if (invite) {
+      invite.prompt();
+      invite.userChoice.then(function () { invite = null; btnInstaller.hidden = true; });
+    } else {
+      ouvrir(document.getElementById("guide-ios"));
+    }
+  });
+  window.addEventListener("appinstalled", function () {
+    btnInstaller.hidden = true;
+    message("Le portail LAPIQ est installé.");
   });
 
+  /* ---------- Partager ---------- */
+  var adresse = location.origin + location.pathname.replace(/index\.html$/, "");
+  document.getElementById("btn-partager").addEventListener("click", function () {
+    var donnees = { title: "Portail LAPIQ", text: "Le portail des membres de LAPIQ", url: adresse };
+    if (navigator.share) {
+      navigator.share(donnees).catch(function () {});
+    } else if (navigator.clipboard) {
+      navigator.clipboard.writeText(adresse).then(function () { message("Lien copié : " + adresse); },
+        function () { message(adresse); });
+    } else {
+      message(adresse);
+    }
+  });
+
+  /* ---------- Hors ligne ---------- */
+  var bandeauHL = document.getElementById("bandeau-hors-ligne");
+  function etatReseau() { bandeauHL.hidden = navigator.onLine; }
+  window.addEventListener("online", etatReseau);
+  window.addEventListener("offline", etatReseau);
+  etatReseau();
+
+  /* ---------- Mises à jour ---------- */
   if ("serviceWorker" in navigator && location.protocol !== "file:") {
-    navigator.serviceWorker.register("sw.js").catch(function () {});
+    var avaitControleur = !!navigator.serviceWorker.controller;
+    navigator.serviceWorker.register("sw.js").then(function (reg) {
+      // Vérifie les mises à jour quand on revient dans l'application.
+      document.addEventListener("visibilitychange", function () {
+        if (document.visibilityState === "visible") reg.update().catch(function () {});
+      });
+    }).catch(function () {});
+    navigator.serviceWorker.addEventListener("controllerchange", function () {
+      if (avaitControleur) document.getElementById("bandeau-maj").hidden = false;
+    });
+    document.getElementById("btn-maj").addEventListener("click", function () { location.reload(); });
   }
 
   rendre();
