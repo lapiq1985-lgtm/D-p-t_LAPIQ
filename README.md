@@ -12,7 +12,7 @@ En haut de l'écran d'accueil : la **carte de membre** du membre.
 | **Site de LAPIQ** | Site public |
 
 ## Fonctionnalités
-- **Carte de membre** : nom, photo, numéro, catégorie, date d'expiration, statut (Valide / Expire bientôt / Expirée) et code QR. Toucher la carte l'agrandit pour la présenter. Elle reste disponible hors ligne, avec un lien vers la carte officielle dans Yapla.
+- **Carte de membre** : reproduit le modèle officiel de la carte Yapla (recto : logo, nom, numéro, catégorie, validité ; verso : attestation, adresse, code QR vers lapiq.org). Statut (Valide / Expire bientôt / Expirée) affiché sous la carte. Toucher la carte l'agrandit (recto et verso). Disponible hors ligne, avec un lien vers la carte officielle dans Yapla.
 - Installable sur téléphone (Android : bouton « Installer » ; iPhone : bouton « Installer » qui affiche le guide Partager → « Sur l'écran d'accueil ») et sur ordinateur.
 - Bouton « Renouveler » qui apparaît 30 jours avant l'expiration de la carte (lien vers l'adhésion Yapla) ; date d'expiration suggérée selon la catégorie.
 - Services : dossier de membre Yapla, Microsoft 365, Campus, site de LAPIQ, boutique, balado *Le Fall In*; réseaux sociaux et coordonnées en pied de page.

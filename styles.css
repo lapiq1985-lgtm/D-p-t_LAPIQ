@@ -147,50 +147,8 @@ legend { font-weight: 700; padding: 0 4px; }
 .erreur { color: var(--rouge); font-size: .82rem; margin: 4px 0 0; }
 @media (prefers-color-scheme: dark) { .erreur { color: #ff8a95; } }
 
-/* ---------- Carte de membre ---------- */
+/* ---------- Carte de membre (modèle officiel LAPIQ) ---------- */
 #zone-carte { margin-bottom: 20px; }
-.carte-membre {
-  position: relative; overflow: hidden; isolation: isolate;
-  display: grid; grid-template-columns: 1fr auto; gap: 14px;
-  width: 100%; max-width: 520px; padding: 18px 18px 14px; border: 0; border-radius: 18px;
-  background: linear-gradient(140deg, var(--marine-2) 0%, var(--marine) 70%);
-  color: #fff; text-align: left; font: inherit; cursor: pointer;
-  box-shadow: inset 0 0 0 3px var(--marine), inset 0 0 0 6px var(--rouge), inset 0 0 0 8px #fff,
-              0 10px 26px rgba(11,28,72,.35);
-}
-/* Logo en filigrane */
-.carte-membre::before {
-  content: ""; position: absolute; z-index: -1; right: -60px; bottom: -60px; width: 240px; height: 240px;
-  background: url("icons/logo-lapiq.png") center / contain no-repeat; opacity: .09;
-}
-.carte-membre:focus-visible { outline: 3px solid var(--rouge); outline-offset: 3px; }
-.cm-haut { grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: center; gap: 8px; padding-top: 4px; }
-.cm-org { display: flex; align-items: center; gap: 10px; font-weight: 800; letter-spacing: .06em; font-style: italic; font-size: 1.05rem; }
-.cm-org img { width: 40px; height: 40px; border-radius: 50%; background: #fff; }
-.cm-titre { font-size: .72rem; text-transform: uppercase; letter-spacing: .12em; opacity: .85; }
-.cm-identite { display: flex; gap: 12px; align-items: center; min-width: 0; }
-.cm-photo {
-  flex: none; width: 64px; height: 64px; border-radius: 50%; object-fit: cover;
-  background: var(--rouge); display: grid; place-items: center; font-weight: 800; font-size: 1.3rem;
-  box-shadow: 0 0 0 2px #fff;
-}
-.cm-nom { margin: 0; font-size: 1.15rem; font-weight: 700; line-height: 1.2; overflow-wrap: anywhere; }
-.cm-cat { margin: 2px 0 0; font-size: .85rem; color: #c9d2ea; }
-.cm-champs { grid-column: 1; display: flex; gap: 18px; flex-wrap: wrap; margin: 0; }
-.cm-champs dt { font-size: .68rem; text-transform: uppercase; letter-spacing: .1em; color: #c9d2ea; }
-.cm-champs dd { margin: 0; font-weight: 700; font-variant-numeric: tabular-nums; }
-.cm-qr { grid-column: 2; grid-row: 2 / span 2; align-self: center; background: #fff; border-radius: 10px; padding: 6px; line-height: 0; }
-.cm-qr svg { width: 88px; height: 88px; }
-.statut {
-  display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: .75rem; font-weight: 700;
-  background: #fff; color: #17663a;
-}
-.statut.bientot { color: #8a5a00; }
-.statut.expiree { background: var(--rouge); color: #fff; }
-.cm-pied {
-  grid-column: 1 / -1; display: flex; justify-content: space-between; gap: 8px;
-  font-size: .78rem; color: #c9d2ea; border-top: 1px solid rgba(255,255,255,.2); padding-top: 8px;
-}
 .carte-vide {
   max-width: 520px; padding: 18px; border-radius: 18px; border: 2px dashed var(--bordure);
   background: var(--surface); display: flex; gap: 12px; align-items: center; justify-content: space-between; flex-wrap: wrap;
@@ -209,22 +167,16 @@ legend { font-weight: 700; padding: 0 4px; }
   .btn-carte-officielle:hover { background: #fff; color: var(--marine); }
 }
 
-/* Vue plein écran */
-dialog.plein-ecran { width: min(560px, calc(100vw - 16px)); padding: 16px; }
-dialog.plein-ecran .carte-membre { cursor: default; grid-template-columns: 1fr; box-shadow: inset 0 0 0 3px var(--marine), inset 0 0 0 6px var(--rouge), inset 0 0 0 8px #fff; }
-dialog.plein-ecran .carte-membre::before { width: 320px; height: 320px; }
-dialog.plein-ecran .cm-qr { grid-column: 1; grid-row: auto; justify-self: center; padding: 10px; }
-dialog.plein-ecran .cm-qr svg { width: min(240px, 60vw); height: min(240px, 60vw); }
-dialog.plein-ecran .cm-photo { width: 84px; height: 84px; }
-dialog.plein-ecran .cm-nom { font-size: 1.4rem; }
+/* Vue plein écran : recto + verso */
+dialog.plein-ecran { width: min(620px, calc(100vw - 16px)); padding: 12px; }
+#carte-grande { display: grid; gap: 12px; }
+#carte-grande .cm { cursor: default; box-shadow: none; }
 
 @media (max-width: 480px) {
   .sous-liens { padding-left: 18px; }
   .marque h1 { font-size: 1.25rem; }
 }
-@media (max-width: 400px) {
-  .cm-qr svg { width: 72px; height: 72px; }
-}
+
 
 /* Mode sombre : faire ressortir les éléments marine sur fond marine */
 @media (prefers-color-scheme: dark) {
@@ -281,3 +233,62 @@ dialog button.lien-danger:hover { background: transparent; color: var(--rouge-fo
   text-decoration: none; color: var(--texte); font-weight: 600;
 }
 .reseaux a:hover { border-color: var(--rouge); color: var(--rouge); }
+
+/* ---------- Carte : proportions et typographie du modèle ---------- */
+.cm {
+  --cm-marine: #2d314b; --cm-rouge: #da3441; --cm-gris: #c3c6d4;
+  --cm-serif: "Source Serif 4", "Source Serif Pro", Georgia, "Times New Roman", serif;
+  --cm-sans: "Source Sans 3", "Source Sans Pro", system-ui, sans-serif;
+  --cm-mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+  position: relative; display: block; width: 100%; max-width: 560px;
+  aspect-ratio: 1376 / 868; container-type: inline-size; overflow: hidden;
+  border: 0; border-radius: 4.2cqw; padding: 0; margin: 0;
+  background: var(--cm-marine); color: #fff; text-align: left; font: inherit; cursor: pointer;
+  box-shadow: 0 10px 26px rgba(20,24,48,.35);
+}
+.cm:focus-visible { outline: 3px solid var(--rouge); outline-offset: 3px; }
+.cm p { margin: 0; }
+.cm-recto::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 2.55%; background: var(--cm-rouge); }
+.cm-logo { position: absolute; left: 6%; top: 21.5%; width: 26.8%; border-radius: 50%; background: #fff; }
+.cm-droite { position: absolute; left: 36.6%; right: 4.5%; top: 8.3%; }
+.cm-surtitre { font-family: var(--cm-sans); font-weight: 600; color: var(--cm-rouge); font-size: 2.15cqw; letter-spacing: .32em; text-transform: uppercase; }
+.cm-org { font-family: var(--cm-serif); font-weight: 700; font-size: 6.6cqw; line-height: 1.15; margin-top: .4cqw !important; }
+.cm-assoc { font-family: var(--cm-sans); color: var(--cm-gris); font-size: 2.3cqw; margin-top: .6cqw !important; }
+.cm-filet { border: 0; border-top: .22cqw solid var(--cm-rouge); margin: 3.2cqw 0 0; }
+.cm-recto .cm-nom { font-family: var(--cm-serif); font-weight: 600; font-size: 4.8cqw; line-height: 1.15; margin-top: 14.6cqw !important; overflow-wrap: anywhere; }
+.cm-no { font-family: var(--cm-mono); font-weight: 500; font-size: 3.4cqw; color: #e9ebf2; margin-top: 1.6cqw !important; }
+.cm-no-lib { font-size: .62em; color: var(--cm-gris); }
+.cm-bande {
+  position: absolute; left: 0; right: 0; bottom: 0; height: 13%;
+  background: var(--cm-rouge); color: #fff; font-family: var(--cm-sans);
+  display: flex; align-items: center; justify-content: space-between; padding: 0 4.5% 0 5.9%;
+  font-size: 2.3cqw;
+}
+.cm-cat { font-weight: 600; }
+/* Verso */
+.cm-verso::after { content: ""; position: absolute; right: 0; top: 0; bottom: 0; width: 2.55%; background: var(--cm-rouge); }
+.cm-tete { position: absolute; left: 4.9%; top: 7.8%; right: 7%; display: flex; align-items: center; gap: 3.2cqw; }
+.cm-logo-petit { width: 15.6cqw; border-radius: 50%; background: #fff; flex: none; }
+.cm-verso .cm-org { font-size: 4.6cqw; margin: 0 !important; }
+.cm-verso .cm-assoc { font-size: 2.3cqw; }
+.cm-verso > .cm-filet { position: absolute; left: 4.9%; right: 6.5%; top: 36%; margin: 0; }
+.cm-corps { position: absolute; left: 4.9%; right: 5.9%; top: 40%; bottom: 15%; display: flex; justify-content: space-between; gap: 3cqw; }
+.cm-texte { font-family: var(--cm-sans); font-size: 2.35cqw; line-height: 1.4; }
+.cm-atteste { margin-bottom: 1.4cqw !important; }
+.cm-atteste::after { content: ""; display: block; width: 9.3cqw; margin-top: 1.4cqw; border-top: .2cqw solid var(--cm-rouge); }
+.cm-adr1 sup { font-size: .62em; }
+.cm-adr1 { font-weight: 600; }
+.cm-adr2 { color: var(--cm-gris); }
+.cm-site { font-weight: 600; margin-top: .8cqw !important; }
+.cm-qr { flex: none; align-self: flex-end; width: 20.8cqw; background: #fff; border-radius: 1cqw; padding: 1cqw; line-height: 0; }
+.cm-qr svg { width: 100%; height: auto; display: block; }
+.cm-devise { justify-content: center; padding: 0; right: 2.55%; font-size: 2.3cqw; }
+/* État sous la carte */
+.cm-etat { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
+.cm-aide { color: var(--doux); font-size: .85rem; }
+.statut {
+  display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: .78rem; font-weight: 700;
+  background: #e3f4e9; color: #17663a;
+}
+.statut.bientot { background: #fff3cd; color: #7a5200; }
+.statut.expiree { background: var(--rouge); color: #fff; }

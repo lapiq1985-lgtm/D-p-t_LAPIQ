@@ -37,12 +37,18 @@ window.LAPIQ_CONFIG = {
     // Laisser vide : le code QR contient alors le nom, le numéro et la date d'expiration.
     urlVerification: "",
     joursAvertissement: 30, // affiche « expire bientôt » sous ce seuil
+    // Textes repris du modèle officiel de la carte (Yapla)
+    sousTitre: "Association des pompiers instructeurs du Québec",
+    attestation: "Cette carte atteste que son titulaire est membre en règle de LAPIQ. Elle demeure la propriété de l\u2019Association.",
+    adresse: ["6, 1re Avenue Ouest", "Sainte-Anne-des-Monts (Québec)  G4V 1A1"],
+    devise: "Ceux qui forment les pompiers du Québec · Depuis 1985",
+    qr: "https://lapiq.org", // contenu du code QR de la carte officielle
     // Catégories d'adhésion 2026-2027 (lapiq.org/devenir-membre).
     // « fin » sert à préremplir la date d'expiration.
     categories: [
-      { nom: "Membre régulier — Instructeur ENPQ", fin: "2027-06-30" },
-      { nom: "Membre régulier — Enseignant IPIQ", fin: "2027-08-31" },
-      { nom: "Membre étudiant", fin: "2027-08-31" },
+      { nom: "Instructeur ENPQ", fin: "2027-06-30" },
+      { nom: "Enseignant IPIQ", fin: "2027-08-31" },
+      { nom: "Étudiant", fin: "2027-08-31" },
       { nom: "Membre associé", fin: "2027-04-30" },
       { nom: "Membre honoraire", fin: "" }
     ]

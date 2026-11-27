@@ -68,11 +68,11 @@
       return { classe: "bientot", libelle: jours === 0 ? "Expire aujourd'hui" : "Expire dans " + jours + " j" };
     return { classe: "valide", libelle: "Valide" };
   }
+  // Le code QR reprend celui de la carte officielle (lien vers lapiq.org),
+  // ou une page de vérification si LAPIQ en crée une.
   function contenuQR(p) {
     if (cfgCarte.urlVerification) return cfgCarte.urlVerification + encodeURIComponent(p.numero);
-    return [cfg.organisation, "Membre : " + p.nom, "No : " + p.numero,
-      p.categorie ? "Catégorie : " + p.categorie : "",
-      p.expiration ? "Valide jusqu'au : " + p.expiration : ""].filter(Boolean).join("\n");
+    return cfgCarte.qr || "https://lapiq.org";
   }
   function svgQR(donnees) {
     if (!window.qrcode) return "";
@@ -80,54 +80,65 @@
     var qr = window.qrcode(0, "M");
     qr.addData(donnees, "Byte");
     qr.make();
-    return qr.createSvgTag({ cellSize: 4, margin: 0, scalable: true, alt: "Code QR de la carte de membre" });
-  }
-  function initiales(nom) {
-    return nom.split(/\s+/).filter(Boolean).slice(0, 2).map(function (m) { return m[0].toUpperCase(); }).join("");
+    return qr.createSvgTag({ cellSize: 4, margin: 0, scalable: true, alt: "Code QR : " + donnees });
   }
 
-  function construireCarte(p, tag) {
-    var c = el(tag, { class: "carte-membre" });
+  // Recto : reproduit le modèle officiel de la carte de membre LAPIQ.
+  function recto(p, tag) {
+    var c = el(tag, { class: "cm cm-recto" });
     if (tag === "button") {
       c.type = "button";
       c.setAttribute("aria-label", "Agrandir la carte de membre de " + p.nom);
     }
+    c.appendChild(el("img", { class: "cm-logo", src: cfg.logo, alt: "" }));
+    var droite = el("div", { class: "cm-droite" });
+    droite.appendChild(texte("p", { class: "cm-surtitre" }, cfgCarte.titre || "Carte de membre"));
+    droite.appendChild(texte("p", { class: "cm-org" }, cfg.organisation));
+    droite.appendChild(texte("p", { class: "cm-assoc" }, cfgCarte.sousTitre || "Association des pompiers instructeurs du Québec"));
+    droite.appendChild(el("hr", { class: "cm-filet" }));
+    droite.appendChild(texte("p", { class: "cm-nom" }, p.nom));
+    var no = el("p", { class: "cm-no" });
+    no.appendChild(texte("span", { class: "cm-no-lib" }, "N°"));
+    no.appendChild(document.createTextNode(" " + p.numero));
+    droite.appendChild(no);
+    c.appendChild(droite);
+    var bande = el("div", { class: "cm-bande" });
+    bande.appendChild(texte("span", { class: "cm-cat" }, p.categorie || ""));
+    bande.appendChild(texte("span", { class: "cm-valide" }, p.expiration ? "Valide jusqu\u2019au " + formaterDate(p.expiration) : ""));
+    c.appendChild(bande);
+    return c;
+  }
 
-    var haut = el("div", { class: "cm-haut" });
-    var org = el("div", { class: "cm-org" });
-    org.appendChild(el("img", { src: cfg.logo, alt: "" }));
-    org.appendChild(texte("span", {}, cfg.organisation));
-    haut.appendChild(org);
-    var st = statut(p.expiration);
-    haut.appendChild(st ? texte("span", { class: "statut " + st.classe }, st.libelle)
-                        : texte("span", { class: "cm-titre" }, cfgCarte.titre || "Carte de membre"));
-    c.appendChild(haut);
-
-    var ident = el("div", { class: "cm-identite" });
-    if (p.photo) ident.appendChild(el("img", { class: "cm-photo", src: p.photo, alt: "Photo de " + p.nom }));
-    else ident.appendChild(texte("span", { class: "cm-photo", "aria-hidden": "true" }, initiales(p.nom)));
-    var noms = el("div");
-    noms.appendChild(texte("p", { class: "cm-nom" }, p.nom));
-    if (p.categorie) noms.appendChild(texte("p", { class: "cm-cat" }, p.categorie));
-    ident.appendChild(noms);
-    c.appendChild(ident);
-
-    var dl = el("dl", { class: "cm-champs" });
-    [["N° de membre", p.numero], ["Valide jusqu'au", formaterDate(p.expiration)]].forEach(function (x) {
-      var d = el("div");
-      d.appendChild(texte("dt", {}, x[0]));
-      d.appendChild(texte("dd", {}, x[1]));
-      dl.appendChild(d);
-    });
-    c.appendChild(dl);
-
+  // Verso : attestation, coordonnées et code QR.
+  function verso(p) {
+    var c = el("div", { class: "cm cm-verso" });
+    var tete = el("div", { class: "cm-tete" });
+    tete.appendChild(el("img", { class: "cm-logo-petit", src: cfg.logo, alt: "" }));
+    var t = el("div");
+    t.appendChild(texte("p", { class: "cm-org" }, cfg.organisation));
+    t.appendChild(texte("p", { class: "cm-assoc" }, cfgCarte.sousTitre || "Association des pompiers instructeurs du Québec"));
+    tete.appendChild(t);
+    c.appendChild(tete);
+    c.appendChild(el("hr", { class: "cm-filet" }));
+    var bas = el("div", { class: "cm-corps" });
+    var txt = el("div", { class: "cm-texte" });
+    txt.appendChild(texte("p", { class: "cm-atteste" }, cfgCarte.attestation ||
+      "Cette carte atteste que son titulaire est membre en règle de LAPIQ. Elle demeure la propriété de l\u2019Association."));
+    var adr = (cfgCarte.adresse || []);
+    if (adr[0]) {
+      // « 1re » en exposant, comme sur la carte imprimée
+      var l1 = el("p", { class: "cm-adr1" }), m = /^(.*?\d)(re|er|e)( .*)$/.exec(adr[0]);
+      if (m) { l1.appendChild(document.createTextNode(m[1])); l1.appendChild(texte("sup", {}, m[2])); l1.appendChild(document.createTextNode(m[3])); }
+      else l1.textContent = adr[0];
+      txt.appendChild(l1);
+    }
+    if (adr[1]) txt.appendChild(texte("p", { class: "cm-adr2" }, adr[1]));
+    txt.appendChild(texte("p", { class: "cm-site" }, "lapiq.org"));
+    bas.appendChild(txt);
     var qr = svgQR(contenuQR(p));
-    if (qr) c.appendChild(el("div", { class: "cm-qr" }, qr));
-
-    var pied = el("div", { class: "cm-pied" });
-    pied.appendChild(texte("span", {}, cfgCarte.titre || "Carte de membre"));
-    if (tag === "button") pied.appendChild(texte("span", { "aria-hidden": "true" }, "Toucher pour agrandir"));
-    c.appendChild(pied);
+    if (qr) bas.appendChild(el("div", { class: "cm-qr" }, qr));
+    c.appendChild(bas);
+    c.appendChild(texte("div", { class: "cm-bande cm-devise" }, cfgCarte.devise || "Ceux qui forment les pompiers du Québec · Depuis 1985"));
     return c;
   }
 
@@ -142,15 +153,20 @@
       vide.appendChild(b);
       zone.appendChild(vide);
     } else {
-      var carte = construireCarte(p, "button");
+      var carte = recto(p, "button");
       carte.addEventListener("click", function () {
         var grande = document.getElementById("carte-grande");
         grande.innerHTML = "";
-        grande.appendChild(construireCarte(p, "div"));
+        grande.appendChild(recto(p, "div"));
+        grande.appendChild(verso(p));
         ouvrir(document.getElementById("carte-plein-ecran"));
       });
       zone.appendChild(carte);
+      var etat = el("div", { class: "cm-etat" });
       var st = statut(p.expiration);
+      if (st) etat.appendChild(texte("span", { class: "statut " + st.classe }, st.libelle));
+      etat.appendChild(texte("span", { class: "cm-aide" }, "Touchez la carte pour l\u2019agrandir et voir le verso."));
+      zone.appendChild(etat);
       if (st && st.classe !== "valide" && cfg.yapla && cfg.yapla.adhesion) {
         var r = lienExterne(cfg.yapla.adhesion, st.classe === "expiree" ? "Renouveler mon adhésion" : "Renouveler maintenant");
         r.className = "btn-renouveler";
@@ -230,44 +246,12 @@
   /* ---------- Dialogue profil ---------- */
   var dlg = document.getElementById("profil");
   var CHAMPS = ["prenom", "courriel", "nom", "numero", "categorie", "expiration"];
-  var photoTemp = null;
-  var apercu = document.getElementById("apercu-photo");
-  var btnRetirer = document.getElementById("retirer-photo");
-
-  function afficherPhoto(src) {
-    photoTemp = src || null;
-    apercu.hidden = btnRetirer.hidden = !photoTemp;
-    if (photoTemp) apercu.src = photoTemp; else apercu.removeAttribute("src");
-  }
   function ouvrirProfil() {
     var p = lireProfil();
     CHAMPS.forEach(function (c) { document.getElementById(c).value = p[c] || ""; });
     erreurCourriel.hidden = true;
-    document.getElementById("photo").value = "";
-    afficherPhoto(p.photo);
     ouvrir(dlg);
   }
-
-  // Réduit la photo (carré 240 px) pour qu'elle tienne dans le stockage local.
-  document.getElementById("photo").addEventListener("change", function (e) {
-    var f = e.target.files && e.target.files[0];
-    if (!f) return;
-    var img = new Image();
-    var url = URL.createObjectURL(f);
-    img.onload = function () {
-      var t = 240, cote = Math.min(img.width, img.height);
-      var cv = document.createElement("canvas"); cv.width = cv.height = t;
-      cv.getContext("2d").drawImage(img, (img.width - cote) / 2, (img.height - cote) / 2, cote, cote, 0, 0, t, t);
-      URL.revokeObjectURL(url);
-      afficherPhoto(cv.toDataURL("image/jpeg", 0.85));
-    };
-    img.onerror = function () { URL.revokeObjectURL(url); alert("Cette image n'a pas pu être lue."); };
-    img.src = url;
-  });
-  btnRetirer.addEventListener("click", function () {
-    document.getElementById("photo").value = "";
-    afficherPhoto(null);
-  });
 
   document.getElementById("btn-profil").addEventListener("click", ouvrirProfil);
 
@@ -294,7 +278,6 @@
     var p = {};
     CHAMPS.forEach(function (c) { p[c] = document.getElementById(c).value.trim(); });
     p.courriel = p.courriel.toLowerCase();
-    if (photoTemp) p.photo = photoTemp;
     if (!ecrireProfil(p)) alert("Impossible d'enregistrer sur cet appareil (navigation privée?).");
     rendre();
   });

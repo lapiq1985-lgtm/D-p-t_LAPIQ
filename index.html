@@ -11,6 +11,9 @@
   <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="LAPIQ">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@600;700&family=Source+Sans+3:wght@400;600&family=IBM+Plex+Mono:wght@500&display=swap">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -87,22 +90,16 @@
 
       <fieldset>
         <legend>Carte de membre</legend>
-        <p class="note">Recopiez les informations de votre carte officielle (portail Yapla).</p>
+        <p class="note">Recopiez les informations de votre carte officielle, disponible dans l'espace membres Yapla.</p>
         <label for="nom">Nom complet</label>
         <input id="nom" autocomplete="name">
         <label for="numero">Numéro de membre</label>
-        <input id="numero" inputmode="text" autocomplete="off">
+        <input id="numero" inputmode="text" autocomplete="off" placeholder="LAPIQ-000000">
         <label for="categorie">Catégorie d'adhésion</label>
         <input id="categorie" list="liste-categories" placeholder="Choisir ou écrire">
         <datalist id="liste-categories"></datalist>
         <label for="expiration">Valide jusqu'au</label>
         <input id="expiration" type="date">
-        <label for="photo">Photo (facultatif)</label>
-        <div class="photo-ligne">
-          <img id="apercu-photo" alt="" hidden>
-          <input id="photo" type="file" accept="image/*">
-          <button type="button" id="retirer-photo" class="secondaire" hidden>Retirer</button>
-        </div>
       </fieldset>
       <p class="note">Ces informations restent sur cet appareil. L'adresse sert uniquement à préremplir la connexion Microsoft.</p>
       <div class="actions">
