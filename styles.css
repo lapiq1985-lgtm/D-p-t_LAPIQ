@@ -258,7 +258,7 @@ dialog button.lien-danger:hover { background: transparent; color: var(--rouge-fo
   --cm-mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
   position: relative; display: block; width: 100%; max-width: 560px;
   aspect-ratio: 856 / 540; container-type: inline-size; overflow: hidden;
-  border: 0; border-radius: 3.7cqw; padding: 0; margin: 0;
+  border: 0; border-radius: 0; padding: 0; margin: 0;
   background: var(--cm-marine); color: #fff; text-align: left; font: inherit; cursor: pointer;
   box-shadow: 0 10px 26px rgba(20,24,48,.35);
 }
@@ -271,20 +271,20 @@ dialog button.lien-danger:hover { background: transparent; color: var(--rouge-fo
 .cm p { margin: 0; }
 .cm-recto::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 2.51%; background: var(--cm-rouge); }
 .cm-logo { position: absolute; left: 5.5%; top: 20.4%; width: 27.7%; height: auto; background: none; border-radius: 0; }
-.cm-droite { position: absolute; left: 36.6%; right: 4.4%; top: 7.6%; }
+.cm-droite { position: absolute; left: 36.6%; right: 4.4%; top: 6.5%; }
 .cm-surtitre { font-family: var(--cm-sans); font-weight: 600; color: var(--cm-rouge); font-size: 2.2cqw; letter-spacing: .18em; text-transform: uppercase; }
 .cm-org { font-family: var(--cm-serif); font-weight: 700; font-size: 6.5cqw; line-height: 1; margin-top: 1.5cqw !important; }
 .cm-assoc { font-family: var(--cm-sans); color: var(--cm-gris); font-size: 2.35cqw; line-height: 1.25; margin-top: 1.1cqw !important; }
 .cm-filet { border: 0; border-top: .2cqw solid var(--cm-rouge); margin: 2.4cqw 0 0; }
 .cm-recto .cm-nom {
-  position: absolute; left: 36.6%; right: 4.4%; bottom: 22.5%;
-  font-family: var(--cm-serif); font-weight: 600; font-size: 4.9cqw; line-height: 1.12;
+  position: absolute; left: 36.6%; right: 4.4%; bottom: 31.4%;
+  font-family: var(--cm-serif); font-weight: 600; font-size: 4.7cqw; line-height: 1.08;
   margin: 0 !important; overflow-wrap: anywhere;
 }
-.cm-nom-moyen { font-size: 3.7cqw !important; bottom: 21% !important; }
-.cm-nom-long { font-size: 3.15cqw !important; bottom: 20.2% !important; }
+.cm-nom-moyen { font-size: 3.9cqw !important; }
+.cm-nom-long { font-size: 3.45cqw !important; line-height: 1.05 !important; }
 .cm-no {
-  position: absolute; left: 36.6%; right: 4.4%; bottom: 16.2%;
+  position: absolute; left: 36.6%; right: 4.4%; bottom: 21.8%;
   font-family: var(--cm-mono); font-weight: 500; font-size: 3.15cqw; color: var(--cm-encre); margin: 0 !important;
 }
 .cm-no-lib { font-family: var(--cm-sans); font-weight: 600; font-size: .62em; color: var(--cm-gris); margin-right: .35em; }
@@ -302,16 +302,16 @@ dialog button.lien-danger:hover { background: transparent; color: var(--rouge-fo
 .cm-verso .cm-org { font-size: 4.35cqw; margin: 0 !important; line-height: 1; }
 .cm-verso .cm-assoc { font-size: 2.2cqw; margin-top: .7cqw !important; }
 .cm-verso > .cm-filet { position: absolute; left: 4.9%; right: 6.4%; top: 34.5%; margin: 0; }
-.cm-corps { position: absolute; left: 4.9%; right: 6.4%; top: 39%; bottom: 14.5%; display: flex; justify-content: space-between; align-items: flex-end; gap: 3cqw; }
-.cm-texte { font-family: var(--cm-sans); font-size: 2.45cqw; line-height: 1.35; color: var(--cm-encre); align-self: flex-start; }
-.cm-atteste { margin-bottom: 1.6cqw !important; }
-.cm-atteste::after { content: ""; display: block; width: 9.3cqw; margin-top: 1.5cqw; border-top: .18cqw solid var(--cm-rouge); }
+.cm-corps { position: absolute; left: 4.9%; right: 6.4%; top: 38.5%; bottom: 14%; }
+.cm-texte { font-family: var(--cm-sans); font-size: 2.45cqw; line-height: 1.32; color: var(--cm-encre); max-width: 68%; }
+.cm-atteste { margin-bottom: .5cqw !important; }
+.cm-atteste::after { content: ""; display: block; width: 9.3cqw; margin-top: .9cqw; border-top: .18cqw solid var(--cm-rouge); }
 .cm-adr1 sup { font-size: .62em; }
 .cm-adr1 { font-weight: 600; color: #fff; margin-top: .4cqw !important; }
 .cm-or .cm-adr1, .cm-or .cm-site, .cm-or .cm-org { color: var(--cm-encre); }
 .cm-adr2 { color: var(--cm-gris); }
 .cm-site { font-weight: 600; font-size: 1.15em; margin-top: .9cqw !important; color: #fff; }
-.cm-qr { flex: none; align-self: flex-end; width: 21.2cqw; background: #fff; border-radius: 1.1cqw; padding: 1.15cqw; line-height: 0; }
+.cm-qr { position: absolute; right: 6.2%; bottom: 20.6%; width: 21.2cqw; background: #fff; border-radius: 1.1cqw; padding: 1.15cqw; line-height: 0; }
 .cm-qr svg { width: 100%; height: auto; display: block; }
 .cm-devise { justify-content: center; padding: 0 3%; font-size: 2.35cqw; }
 /* État sous la carte */

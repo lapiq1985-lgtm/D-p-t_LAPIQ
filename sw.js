@@ -1,5 +1,5 @@
 // Service worker : garde le portail (et la carte de membre) disponible hors ligne.
-var CACHE = "lapiq-portail-v11";
+var CACHE = "lapiq-portail-v12";
 var QR = "https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js";
 var FICHIERS = ["./", "index.html", "styles.css", "app.js", "config.js",
   "manifest.webmanifest", "icons/logo-lapiq.png", "icons/logo-campus.png", "icons/favicon.png",

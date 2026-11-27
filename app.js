@@ -156,9 +156,9 @@
     if (adr[1]) txt.appendChild(texte("p", { class: "cm-adr2" }, adr[1]));
     txt.appendChild(texte("p", { class: "cm-site" }, "lapiq.org"));
     bas.appendChild(txt);
-    var qr = svgQR(contenuQR(), p.theme === "or" ? "#1A1714" : "#2D314B");
-    if (qr) bas.appendChild(el("div", { class: "cm-qr" }, qr));
     c.appendChild(bas);
+    var qr = svgQR(contenuQR(), p.theme === "or" ? "#1A1714" : "#2D314B");
+    if (qr) c.appendChild(el("div", { class: "cm-qr" }, qr));
     c.appendChild(texte("div", { class: "cm-bande cm-devise" }, cfgCarte.devise || "Ceux qui forment les pompiers du Québec · Depuis 1985"));
     return c;
   }
