@@ -111,20 +111,54 @@ window.LAPIQ_CONFIG = {
       icone: "boutique",
       url: "https://store.lapiq.org/",
       liens: []
-    },
-    {
-      id: "balado",
-      nom: "Balado Le Fall In",
-      description: "Des instructeurs parlent formation, terrain, normes et jugement.",
-      couleur: "#d21f30",
-      icone: "balado",
-      url: "https://open.spotify.com/show/0FVQP3AETS2w5Bj4pL5IGN",
-      liens: [
-        { nom: "Spotify", url: "https://open.spotify.com/show/0FVQP3AETS2w5Bj4pL5IGN" },
-        { nom: "Apple Podcasts", url: "https://podcasts.apple.com/us/podcast/le-fall-in/id6809077124" }
-      ]
     }
   ],
+
+
+  // Les deux balados ont chacun leur jaquette et leur page Spotify.
+  // Le Fall-in (analyses de fond) et Caserne 85 — Astuces (trucs courts pour la caserne).
+  podcasts: {
+    titre: "Podcasts LAPIQ",
+    intro: "Deux séries pour approfondir la formation et glaner des trucs d’instructeurs.",
+    emissions: [
+      {
+        id: "fall-in",
+        nom: "Le Fall-in",
+        sousTitre: "Podcast LAPIQ · Élever la formation",
+        description: "Podcast de L’Association des pompiers instructeurs du Québec. Des instructeurs parlent formation, terrain, normes et jugement.",
+        image: "images/caserne85-fall-in.webp",
+        imageRepli: "images/caserne85-fall-in.jpg",
+        url: "https://open.spotify.com/show/0FVQP3AETS2w5Bj4pL5IGN",
+        embed: "https://open.spotify.com/embed/show/0FVQP3AETS2w5Bj4pL5IGN",
+        liens: [
+          { nom: "Spotify", url: "https://open.spotify.com/show/0FVQP3AETS2w5Bj4pL5IGN" },
+          { nom: "Apple Podcasts", url: "https://podcasts.apple.com/us/podcast/le-fall-in/id6809077124" }
+        ]
+      },
+      {
+        id: "astuces",
+        nom: "Caserne 85 — Astuces pour instructeurs",
+        sousTitre: "Trucs pour instructeurs · LAPIQ",
+        description: "Des petits vidéos et des animations pour agrémenter vos formations et pratiques en caserne.",
+        image: "images/caserne85-astuces.webp",
+        imageRepli: "images/caserne85-astuces.jpg",
+        url: "https://open.spotify.com/show/3OOHBVdseJBelg9FoF28Ta",
+        embed: "https://open.spotify.com/embed/show/3OOHBVdseJBelg9FoF28Ta",
+        liens: [
+          { nom: "Spotify", url: "https://open.spotify.com/show/3OOHBVdseJBelg9FoF28Ta" }
+        ]
+      }
+    ]
+  },
+
+  // Lien d’invitation fourni par Simon (27 nov. 2026). Le groupe est privé ;
+  // Facebook n’en affiche pas le nom sans connexion. Bouton volontairement explicite.
+  groupeFacebook: {
+    nom: "Groupe Facebook",
+    description: "Groupe privé de discussion pour échanger sur la formation, réservé aux membres et Followers de LAPIQ.",
+    bouton: "Rejoindre le groupe Facebook",
+    url: "https://www.facebook.com/share/g/1EBSbuKUXz/?mibextid=wwXIfr"
+  },
 
   reseaux: [
     { nom: "Facebook", url: "https://www.facebook.com/LAPIQ" },

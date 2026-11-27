@@ -324,3 +324,43 @@ dialog button.lien-danger:hover { background: transparent; color: var(--rouge-fo
 .statut.bientot { background: #fff3cd; color: #7a5200; }
 .statut.expiree { background: var(--rouge); color: #fff; }
 .statut.vie { background: #f3e6d4; color: #5c4318; }
+
+
+/* ---------- Podcasts ---------- */
+.podcasts { margin: 32px 0 8px; }
+.podcasts h2 { margin: 0 0 6px; font-size: 1.4rem; }
+.podcasts-intro { margin: 0 0 16px; color: var(--doux); }
+.grille-podcasts { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
+.carte-podcast {
+  background: var(--surface); border: 1px solid var(--bordure); border-radius: 16px;
+  border-top: 4px solid var(--rouge);
+  box-shadow: var(--ombre); overflow: hidden; display: flex; flex-direction: column;
+}
+.podcast-visuel { display: block; background: #0b0b0b; }
+.podcast-visuel:focus-visible { outline: 3px solid var(--rouge); outline-offset: -3px; }
+.podcast-visuel img { display: block; width: 100%; height: auto; }
+.podcast-corps { padding: 16px 18px 18px; display: flex; flex-direction: column; gap: 6px; flex: 1; }
+.podcast-corps h3 { margin: 0; font-size: 1.15rem; }
+.podcast-sous-titre { margin: 0; color: var(--doux); font-size: .9rem; }
+.podcast-desc { margin: 4px 0 0; color: var(--texte); font-size: .95rem; }
+.carte-podcast .sous-liens { padding: 8px 0 0; }
+.podcast-lecteur { margin-top: 10px; }
+.podcast-lecteur iframe {
+  width: 100%; border: 0; border-radius: 12px; display: block; min-height: 352px;
+}
+
+/* ---------- Groupe Facebook ---------- */
+.communaute { margin: 24px 0 8px; }
+.carte-communaute {
+  background: var(--surface); border: 1px solid var(--bordure); border-radius: 16px;
+  border-left: 5px solid var(--marine);
+  box-shadow: var(--ombre); padding: 18px;
+}
+@media (prefers-color-scheme: dark) { .carte-communaute { border-left-color: var(--rouge); } }
+.carte-communaute h2 { margin: 0 0 6px; font-size: 1.15rem; }
+.carte-communaute p { margin: 0 0 14px; color: var(--doux); }
+.btn-facebook {
+  display: inline-block; font: inherit; font-weight: 700; text-decoration: none;
+  border-radius: 10px; padding: 10px 18px; background: var(--rouge); color: #fff;
+}
+.btn-facebook:hover { background: var(--rouge-fonce); }

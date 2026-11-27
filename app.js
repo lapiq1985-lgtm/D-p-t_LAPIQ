@@ -333,6 +333,92 @@
     });
   }
 
+
+  /* ---------- Podcasts et groupe Facebook ---------- */
+  function rendrePodcasts() {
+    var zone = document.getElementById("podcasts");
+    var pod = cfg.podcasts;
+    if (!zone) return;
+    if (!pod || !pod.emissions || !pod.emissions.length) {
+      zone.hidden = true;
+      return;
+    }
+    zone.hidden = false;
+    zone.innerHTML = "";
+    zone.appendChild(texte("h2", {}, pod.titre || "Podcasts LAPIQ"));
+    if (pod.intro) zone.appendChild(texte("p", { class: "podcasts-intro" }, pod.intro));
+    var grille = el("div", { class: "grille-podcasts" });
+    pod.emissions.forEach(function (p) {
+      var carte = el("article", { class: "carte-podcast" });
+      var visuel = lienExterne(p.url, "");
+      visuel.className = "podcast-visuel";
+      visuel.setAttribute("aria-label", "Écouter " + p.nom + " sur Spotify");
+      var pic = el("picture");
+      if (p.image && /\.webp$/i.test(p.image)) {
+        pic.appendChild(el("source", { srcset: p.image, type: "image/webp" }));
+      }
+      pic.appendChild(el("img", {
+        src: p.imageRepli || p.image,
+        alt: "Jaquette de « " + p.nom + " »",
+        width: "784",
+        height: "1168"
+      }));
+      visuel.innerHTML = "";
+      visuel.appendChild(pic);
+      carte.appendChild(visuel);
+      var corps = el("div", { class: "podcast-corps" });
+      corps.appendChild(texte("h3", {}, p.nom));
+      if (p.sousTitre) corps.appendChild(texte("p", { class: "podcast-sous-titre" }, p.sousTitre));
+      if (p.description) corps.appendChild(texte("p", { class: "podcast-desc" }, p.description));
+      if (p.liens && p.liens.length) {
+        var ul = el("ul", { class: "sous-liens", "aria-label": "Écouter " + p.nom });
+        p.liens.forEach(function (l) {
+          var li = el("li");
+          li.appendChild(lienExterne(l.url, l.nom));
+          ul.appendChild(li);
+        });
+        corps.appendChild(ul);
+      }
+      if (p.embed) {
+        var lecteur = el("div", { class: "podcast-lecteur" });
+        var iframe = el("iframe", {
+          src: p.embed,
+          width: "100%",
+          height: "352",
+          allow: "autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture",
+          loading: "lazy",
+          title: "Lecteur Spotify — " + p.nom
+        });
+        iframe.setAttribute("allowfullscreen", "true");
+        iframe.setAttribute("frameborder", "0");
+        lecteur.appendChild(iframe);
+        corps.appendChild(lecteur);
+      }
+      carte.appendChild(corps);
+      grille.appendChild(carte);
+    });
+    zone.appendChild(grille);
+  }
+
+  function rendreGroupeFacebook() {
+    var zone = document.getElementById("groupe-facebook");
+    var g = cfg.groupeFacebook;
+    if (!zone) return;
+    if (!g || !g.url) {
+      zone.hidden = true;
+      return;
+    }
+    zone.hidden = false;
+    zone.innerHTML = "";
+    var bloc = el("div", { class: "carte-communaute" });
+    bloc.appendChild(texte("h2", {}, g.nom || "Groupe Facebook"));
+    if (g.description) bloc.appendChild(texte("p", {}, g.description));
+    var a = lienExterne(g.url, g.bouton || "Rejoindre le groupe Facebook");
+    a.className = "btn-facebook";
+    bloc.appendChild(a);
+    zone.appendChild(bloc);
+  }
+
   function rendre() {
     var profil = lireProfil();
     document.getElementById("titre").textContent = cfg.organisation;
@@ -342,6 +428,8 @@
     saluer();
     rendreCarte(lireCarte());
     rendreServices(profil);
+    rendrePodcasts();
+    rendreGroupeFacebook();
 
     // Pied de page et liens d'aide
     document.getElementById("adresse").textContent = cfg.adresse || "";
@@ -353,6 +441,9 @@
     var res = document.getElementById("reseaux");
     res.innerHTML = "";
     (cfg.reseaux || []).forEach(function (r) { res.appendChild(lienExterne(r.url, r.nom)); });
+    if (cfg.groupeFacebook && cfg.groupeFacebook.url) {
+      res.appendChild(lienExterne(cfg.groupeFacebook.url, "Groupe Facebook"));
+    }
 
     var soutien = document.getElementById("soutien");
     soutien.innerHTML = "";
