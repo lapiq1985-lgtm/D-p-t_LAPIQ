@@ -1,5 +1,6 @@
-node_modules/
-.vercel/
-*.pkpass
-*.pem
-*.p12
+# Export Yapla réel. Ne jamais committer de données personnelles.
+data/membres.json
+data/membres.json.gz.b64
+
+.vercel
+node_modules

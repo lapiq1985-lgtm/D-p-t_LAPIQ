@@ -21,41 +21,25 @@ window.LAPIQ_CONFIG = {
   confidentialite: "https://lapiq.org/confidentialite/",
   adresse: "6, 1re Avenue Ouest, Sainte-Anne-des-Monts (Québec) G4V 1B5",
 
-  // Carte Apple Wallet : fonction serveur du même projet Vercel (api/wallet.js).
-  // Le bouton n'apparaît que lorsque les certificats Apple sont configurés.
-  wallet: { url: "/api/wallet" },
-
   // Espace membres Yapla
   yapla: {
     connexion: "https://lapiq.s1.yapla.com/fr/espace-membres/authentication/",
     adhesion: "https://lapiq.s1.yapla.com/fr/espace-membres/adhesion/"
   },
 
-  // Carte de membre affichée dans l'application
+  // Carte de membre officielle, produite à partir de l'export Yapla.
+  // Le membre ne saisit pas ces textes : ils sont fixes, comme sur la carte imprimée.
+  // Le code postal G4V 1B5 est celui de LAPIQ (à conserver).
   carteMembre: {
     titre: "Carte de membre",
-    // Page où le membre consulte sa carte officielle (espace membres Yapla)
-    urlOfficielle: "https://lapiq.s1.yapla.com/fr/espace-membres/authentication/",
-    // Si LAPIQ crée une page de vérification, le code QR pointera vers
-    // cette adresse suivie du numéro de membre (ex. "https://lapiq.org/verifier?no=").
-    // Laisser vide : le code QR contient alors le nom, le numéro et la date d'expiration.
-    urlVerification: "",
     joursAvertissement: 30, // affiche « expire bientôt » sous ce seuil
-    // Textes repris du modèle officiel de la carte (Yapla)
     sousTitre: "Association des pompiers instructeurs du Québec",
     attestation: "Cette carte atteste que son titulaire est membre en règle de LAPIQ. Elle demeure la propriété de l\u2019Association.",
-    adresse: ["6, 1re Avenue Ouest", "Sainte-Anne-des-Monts (Québec)  G4V 1B5"],
+    adresse: ["6, 1re Avenue Ouest", "Sainte-Anne-des-Monts (Québec) G4V 1B5"],
     devise: "Ceux qui forment les pompiers du Québec · Depuis 1985",
-    qr: "https://lapiq.org", // contenu du code QR de la carte officielle
-    // Catégories d'adhésion 2026-2027 (lapiq.org/devenir-membre).
-    // « fin » sert à préremplir la date d'expiration.
-    categories: [
-      { nom: "Instructeur ENPQ", fin: "2027-06-30" },
-      { nom: "Enseignant IPIQ", fin: "2027-08-31" },
-      { nom: "Étudiant", fin: "2027-08-31" },
-      { nom: "Membre associé", fin: "2027-04-30" },
-      { nom: "Membre honoraire", fin: "" }
-    ]
+    qr: "https://lapiq.org",
+    ecusson: "icons/ecusson-rouge-bleu.png",
+    ecussonOr: "icons/ecusson-noir-or.png"
   },
 
   services: [

@@ -3,6 +3,7 @@
   var cfg = window.LAPIQ_CONFIG;
   var cfgCarte = cfg.carteMembre || {};
   var CLE = "lapiq-profil";
+  var CLE_CARTE = "lapiq-carte";
 
   var ICONES = {
     yapla: '<svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="11" r="2.5"/><path d="M5.5 17c.6-2 2-3 3.5-3s2.9 1 3.5 3M14 9h4M14 13h4"/></svg>',
@@ -20,6 +21,16 @@
   function ecrireProfil(p) {
     try { localStorage.setItem(CLE, JSON.stringify(p)); return true; }
     catch (e) { return false; }
+  }
+  function lireCarte() {
+    try { return JSON.parse(localStorage.getItem(CLE_CARTE)) || null; } catch (e) { return null; }
+  }
+  function ecrireCarte(c) {
+    try { localStorage.setItem(CLE_CARTE, JSON.stringify(c)); return true; }
+    catch (e) { return false; }
+  }
+  function effacerCarte() {
+    try { localStorage.removeItem(CLE_CARTE); } catch (e) { /* rien à retirer */ }
   }
 
   /* ---------- Utilitaires DOM ---------- */
@@ -47,9 +58,7 @@
     } catch (e) { return base; }
   }
 
-  /* ---------- Carte de membre ---------- */
-  function aCarte(p) { return !!(p.nom && p.numero); }
-
+  /* ---------- Carte de membre officielle ---------- */
   function dateLocale(iso) {
     var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso || "");
     return m ? new Date(+m[1], +m[2] - 1, +m[3]) : null;
@@ -70,50 +79,63 @@
   }
   // Le code QR reprend celui de la carte officielle (lien vers lapiq.org),
   // ou une page de vérification si LAPIQ en crée une.
-  function contenuQR(p) {
-    if (cfgCarte.urlVerification) return cfgCarte.urlVerification + encodeURIComponent(p.numero);
+  function contenuQR() {
     return cfgCarte.qr || "https://lapiq.org";
   }
-  function svgQR(donnees) {
+  function svgQR(donnees, couleur) {
     if (!window.qrcode) return "";
     window.qrcode.stringToBytes = window.qrcode.stringToBytesFuncs["UTF-8"];
     var qr = window.qrcode(0, "M");
     qr.addData(donnees, "Byte");
     qr.make();
-    return qr.createSvgTag({ cellSize: 4, margin: 0, scalable: true, alt: "Code QR : " + donnees });
+    var svg = qr.createSvgTag({ cellSize: 4, margin: 0, scalable: true, alt: "Code QR vers lapiq.org" });
+    return svg.replace(/#000000/gi, couleur).replace(/fill="black"/gi, 'fill="' + couleur + '"');
   }
+  function logoCarte(theme) {
+    if (theme === "or") return cfgCarte.ecussonOr || "icons/ecusson-noir-or.png";
+    return cfgCarte.ecusson || "icons/ecusson-rouge-bleu.png";
+  }
+  function classeNom(nom) {
+    if (nom.length > 32) return "cm-nom cm-nom-long";
+    if (nom.length > 20) return "cm-nom cm-nom-moyen";
+    return "cm-nom";
+  }
+  function nomAffiche(p) { return p.nomComplet || p.nom || ""; }
 
-  // Recto : reproduit le modèle officiel de la carte de membre LAPIQ.
+  // Recto : même composition que la carte imprimée (écusson, identité, bandeau).
   function recto(p, tag) {
-    var c = el(tag, { class: "cm cm-recto" });
+    var c = el(tag, { class: "cm cm-recto" + (p.theme === "or" ? " cm-or" : "") });
     if (tag === "button") {
       c.type = "button";
-      c.setAttribute("aria-label", "Agrandir la carte de membre de " + p.nom);
+      c.setAttribute("aria-label", "Agrandir la carte de membre de " + nomAffiche(p));
     }
-    c.appendChild(el("img", { class: "cm-logo", src: cfg.logo, alt: "" }));
+    c.appendChild(el("img", { class: "cm-logo", src: logoCarte(p.theme), alt: "" }));
     var droite = el("div", { class: "cm-droite" });
     droite.appendChild(texte("p", { class: "cm-surtitre" }, cfgCarte.titre || "Carte de membre"));
     droite.appendChild(texte("p", { class: "cm-org" }, cfg.organisation));
     droite.appendChild(texte("p", { class: "cm-assoc" }, cfgCarte.sousTitre || "Association des pompiers instructeurs du Québec"));
     droite.appendChild(el("hr", { class: "cm-filet" }));
-    droite.appendChild(texte("p", { class: "cm-nom" }, p.nom));
+    c.appendChild(droite);
+    c.appendChild(texte("p", { class: classeNom(nomAffiche(p)) }, nomAffiche(p)));
     var no = el("p", { class: "cm-no" });
     no.appendChild(texte("span", { class: "cm-no-lib" }, "N°"));
-    no.appendChild(document.createTextNode(" " + p.numero));
-    droite.appendChild(no);
-    c.appendChild(droite);
+    no.appendChild(document.createTextNode(p.numero));
+    c.appendChild(no);
     var bande = el("div", { class: "cm-bande" });
     bande.appendChild(texte("span", { class: "cm-cat" }, p.categorie || ""));
-    bande.appendChild(texte("span", { class: "cm-valide" }, p.expiration ? "Valide jusqu\u2019au " + formaterDate(p.expiration) : ""));
+    if (p.theme !== "or") {
+      var validite = p.validite || (p.expiration ? "Valide jusqu\u2019au " + formaterDate(p.expiration) : "");
+      if (validite) bande.appendChild(texte("span", { class: "cm-valide" }, validite));
+    }
     c.appendChild(bande);
     return c;
   }
 
-  // Verso : attestation, coordonnées et code QR.
+  // Verso : attestation, coordonnées de LAPIQ et code QR vers lapiq.org.
   function verso(p) {
-    var c = el("div", { class: "cm cm-verso" });
+    var c = el("div", { class: "cm cm-verso" + (p.theme === "or" ? " cm-or" : "") });
     var tete = el("div", { class: "cm-tete" });
-    tete.appendChild(el("img", { class: "cm-logo-petit", src: cfg.logo, alt: "" }));
+    tete.appendChild(el("img", { class: "cm-logo-petit", src: logoCarte(p.theme), alt: "" }));
     var t = el("div");
     t.appendChild(texte("p", { class: "cm-org" }, cfg.organisation));
     t.appendChild(texte("p", { class: "cm-assoc" }, cfgCarte.sousTitre || "Association des pompiers instructeurs du Québec"));
@@ -126,7 +148,6 @@
       "Cette carte atteste que son titulaire est membre en règle de LAPIQ. Elle demeure la propriété de l\u2019Association."));
     var adr = (cfgCarte.adresse || []);
     if (adr[0]) {
-      // « 1re » en exposant, comme sur la carte imprimée
       var l1 = el("p", { class: "cm-adr1" }), m = /^(.*?\d)(re|er|e)( .*)$/.exec(adr[0]);
       if (m) { l1.appendChild(document.createTextNode(m[1])); l1.appendChild(texte("sup", {}, m[2])); l1.appendChild(document.createTextNode(m[3])); }
       else l1.textContent = adr[0];
@@ -135,79 +156,148 @@
     if (adr[1]) txt.appendChild(texte("p", { class: "cm-adr2" }, adr[1]));
     txt.appendChild(texte("p", { class: "cm-site" }, "lapiq.org"));
     bas.appendChild(txt);
-    var qr = svgQR(contenuQR(p));
-    if (qr) bas.appendChild(el("div", { class: "cm-qr" }, qr));
     c.appendChild(bas);
+    var qr = svgQR(contenuQR(), p.theme === "or" ? "#1A1714" : "#2D314B");
+    if (qr) c.appendChild(el("div", { class: "cm-qr" }, qr));
     c.appendChild(texte("div", { class: "cm-bande cm-devise" }, cfgCarte.devise || "Ceux qui forment les pompiers du Québec · Depuis 1985"));
     return c;
   }
 
-  /* ---------- Apple Wallet ---------- */
-  var appareilApple = /iphone|ipad|ipod|macintosh/i.test(navigator.userAgent);
-  var walletPret = null; // null = pas encore vérifié
-  function verifierWallet(apres) {
-    if (!cfg.wallet || !cfg.wallet.url || !appareilApple || walletPret !== null) return;
-    walletPret = false;
-    fetch(cfg.wallet.url + "?etat=1", { cache: "no-store" })
-      .then(function (r) { return r.ok ? r.json() : { pret: false }; })
-      .then(function (d) { walletPret = !!(d && d.pret); if (walletPret) apres(); })
-      .catch(function () { walletPret = false; });
+  function ouvrirGrande(p) {
+    var grande = document.getElementById("carte-grande");
+    grande.innerHTML = "";
+    grande.appendChild(recto(p, "div"));
+    grande.appendChild(verso(p));
+    ouvrir(document.getElementById("carte-plein-ecran"));
   }
-  // Envoie les informations de la carte au serveur, qui renvoie la carte .pkpass signée.
-  function ajouterAuWallet(p) {
-    var f = el("form", { method: "post", action: cfg.wallet.url, target: "_blank" });
-    ["nom", "numero", "categorie", "expiration"].forEach(function (k) {
-      var i = el("input", { type: "hidden", name: k }); i.value = p[k] || ""; f.appendChild(i);
+
+  function montrerRecherche(numero, erreur) {
+    var zone = document.getElementById("zone-carte");
+    zone.innerHTML = "";
+    var bloc = el("div", { class: "carte-recherche" });
+    bloc.appendChild(texte("h3", {}, "Carte de membre"));
+    bloc.appendChild(texte("p", {}, "Retrouvez la carte officielle liée à votre adhésion. Le nom, la catégorie et la date proviennent du dossier : ils ne se saisissent pas ici."));
+    var form = el("form", { id: "form-carte" });
+    form.appendChild(texte("label", { for: "recherche-numero" }, "Numéro de membre"));
+    var champ = el("input", {
+      id: "recherche-numero", name: "numero", type: "text", inputmode: "text",
+      autocapitalize: "characters", autocomplete: "off", spellcheck: "false",
+      placeholder: "LAPIQ-261001", required: "required", "aria-describedby": "aide-numero"
     });
-    document.body.appendChild(f); f.submit(); f.remove();
+    if (numero) champ.value = numero;
+    var bouton = texte("button", { type: "submit" }, "Afficher ma carte");
+    var ligne = el("div", { class: "recherche-ligne" });
+    ligne.appendChild(champ);
+    ligne.appendChild(bouton);
+    form.appendChild(ligne);
+    var err = texte("p", { id: "erreur-numero", class: "erreur", role: "alert" }, erreur || "");
+    err.hidden = !erreur;
+    form.appendChild(err);
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      var v = champ.value.trim();
+      if (!v) {
+        err.textContent = "Indiquez votre numéro de membre.";
+        err.hidden = false;
+        champ.focus();
+        return;
+      }
+      bouton.disabled = true;
+      chercherNumero(v).then(function () { bouton.disabled = false; });
+    });
+    bloc.appendChild(form);
+    bloc.appendChild(texte("p", { id: "aide-numero", class: "note" }, "Format LAPIQ-AASNNN, indiqué sur votre reçu d'adhésion ou dans l'espace membres Yapla."));
+    bloc.appendChild(el("div", { id: "exemples-carte" }));
+    zone.appendChild(bloc);
+    proposerExemples();
   }
-  function boutonWallet(zone, p) {
-    if (!walletPret) { verifierWallet(rendre); return; }
-    var b = el("button", { type: "button", class: "btn-wallet", "aria-label": "Ajouter à Apple Wallet" },
-      '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="5" width="19" height="14" rx="3" fill="#fff"/>' +
-      '<path d="M2.5 9h19" stroke="#da3441" stroke-width="2.2"/><path d="M2.5 12h19" stroke="#f5a623" stroke-width="2.2"/>' +
-      '<path d="M2.5 15h19" stroke="#2fa84f" stroke-width="2.2"/></svg><span><small>Ajouter à</small>Apple Wallet</span>');
-    b.addEventListener("click", function () { ajouterAuWallet(p); });
-    zone.appendChild(b);
+
+  function proposerExemples() {
+    var dest = document.getElementById("exemples-carte");
+    if (!dest || dest.childNodes.length) return;
+    fetch("api/membre", { headers: { Accept: "application/json" } })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (data) {
+        if (!dest.isConnected || !data || data.source !== "exemple" || !data.exemples) return;
+        dest.appendChild(texte("p", { class: "note" }, "Aperçu : ces personnes sont fictives, le temps que l'export Yapla soit configuré."));
+        var rangee = el("div", { class: "exemples-demo" });
+        data.exemples.forEach(function (ex) {
+          var b = texte("button", { type: "button" }, ex.nomComplet + " · " + ex.numero);
+          b.addEventListener("click", function () { chercherNumero(ex.numero); });
+          rangee.appendChild(b);
+        });
+        dest.appendChild(rangee);
+      })
+      .catch(function () { /* hors ligne : la recherche reste disponible */ });
+  }
+
+  function chercherNumero(numero, silencieux) {
+    return fetch("api/membre?numero=" + encodeURIComponent(numero), { headers: { Accept: "application/json" } })
+      .then(function (r) {
+        return r.json().then(function (data) { return { ok: r.ok, status: r.status, data: data }; }, function () {
+          return { ok: false, status: r.status, data: {} };
+        });
+      })
+      .then(function (rep) {
+        if (rep.ok && rep.data && rep.data.membre) {
+          var m = rep.data.membre;
+          m.source = rep.data.source;
+          if (!ecrireCarte(m)) message("La carte s'affiche, mais cet appareil ne peut pas la conserver (navigation privée?).");
+          saluer();
+          rendreCarte(m);
+          return;
+        }
+        if (silencieux && rep.status !== 404 && lireCarte()) return;
+        if (rep.status === 404) effacerCarte();
+        montrerRecherche(numero, (rep.data && rep.data.erreur) || "Aucune carte ne correspond à ce numéro.");
+      })
+      .catch(function () {
+        if (silencieux && lireCarte()) return;
+        montrerRecherche(numero, "Impossible de joindre le dossier des membres. Réessayez lorsque vous serez en ligne. Une carte déjà affichée reste disponible hors ligne.");
+      });
   }
 
   function rendreCarte(p) {
     var zone = document.getElementById("zone-carte");
+    if (!p || !p.numero || (!p.nomComplet && !p.nom)) {
+      montrerRecherche();
+      return;
+    }
     zone.innerHTML = "";
-    if (!aCarte(p)) {
-      var vide = el("div", { class: "carte-vide" });
-      vide.appendChild(texte("p", {}, "Ajoutez votre carte de membre pour l'avoir toujours sous la main, même sans Internet."));
-      var b = texte("button", { type: "button" }, "Ajouter ma carte");
-      b.addEventListener("click", ouvrirProfil);
-      vide.appendChild(b);
-      zone.appendChild(vide);
+    var carte = recto(p, "button");
+    carte.addEventListener("click", function () { ouvrirGrande(p); });
+    zone.appendChild(carte);
+    var etat = el("div", { class: "cm-etat" });
+    if (p.theme === "or") {
+      etat.appendChild(texte("span", { class: "statut vie" }, "Membre à vie"));
     } else {
-      var carte = recto(p, "button");
-      carte.addEventListener("click", function () {
-        var grande = document.getElementById("carte-grande");
-        grande.innerHTML = "";
-        grande.appendChild(recto(p, "div"));
-        grande.appendChild(verso(p));
-        ouvrir(document.getElementById("carte-plein-ecran"));
-      });
-      zone.appendChild(carte);
-      var etat = el("div", { class: "cm-etat" });
       var st = statut(p.expiration);
       if (st) etat.appendChild(texte("span", { class: "statut " + st.classe }, st.libelle));
-      etat.appendChild(texte("span", { class: "cm-aide" }, "Touchez la carte pour l\u2019agrandir et voir le verso."));
-      zone.appendChild(etat);
-      boutonWallet(zone, p);
       if (st && st.classe !== "valide" && cfg.yapla && cfg.yapla.adhesion) {
         var r = lienExterne(cfg.yapla.adhesion, st.classe === "expiree" ? "Renouveler mon adhésion" : "Renouveler maintenant");
         r.className = "btn-renouveler";
-        zone.appendChild(r);
+        etat.appendChild(r);
       }
     }
-    if (cfgCarte.urlOfficielle) {
-      var a = lienExterne(cfgCarte.urlOfficielle, "Afficher ma carte officielle (Yapla)");
-      a.className = "btn-carte-officielle";
-      zone.appendChild(a);
+    etat.appendChild(texte("span", { class: "cm-aide" }, "Touchez la carte pour l\u2019agrandir et voir le verso."));
+    zone.appendChild(etat);
+    if (p.source === "exemple") {
+      zone.appendChild(texte("p", { class: "note-exemple" }, "Aperçu de démonstration avec des personnes fictives. La carte réelle s'affichera lorsque l'export Yapla sera configuré."));
     }
+    var retirer = texte("button", { type: "button", class: "btn-retirer" }, "Retirer cette carte de l'appareil");
+    retirer.addEventListener("click", function () {
+      effacerCarte();
+      rendre();
+      message("La carte a été retirée de cet appareil. Le dossier d'adhésion n'a pas été modifié.");
+    });
+    zone.appendChild(retirer);
+  }
+
+  function saluer() {
+    var profil = lireProfil();
+    var carte = lireCarte();
+    var prenom = profil.prenom || (carte && carte.prenom) || "";
+    document.getElementById("salutation").textContent = prenom ? "Bonjour " + prenom + "!" : "Bonjour!";
   }
 
   /* ---------- Services ---------- */
@@ -249,9 +339,8 @@
     document.getElementById("sous-titre").textContent = cfg.sousTitre;
     if (cfg.logo) document.getElementById("logo").src = cfg.logo;
     document.getElementById("nom-complet").textContent = cfg.nomComplet || "";
-    var prenom = profil.prenom || (profil.nom || "").split(/\s+/)[0];
-    document.getElementById("salutation").textContent = prenom ? "Bonjour " + prenom + "!" : "Bonjour!";
-    rendreCarte(profil);
+    saluer();
+    rendreCarte(lireCarte());
     rendreServices(profil);
 
     // Pied de page et liens d'aide
@@ -275,7 +364,7 @@
 
   /* ---------- Dialogue profil ---------- */
   var dlg = document.getElementById("profil");
-  var CHAMPS = ["prenom", "courriel", "nom", "numero", "categorie", "expiration"];
+  var CHAMPS = ["prenom", "courriel"];
   function ouvrirProfil() {
     var p = lireProfil();
     CHAMPS.forEach(function (c) { document.getElementById(c).value = p[c] || ""; });
@@ -284,16 +373,6 @@
   }
 
   document.getElementById("btn-profil").addEventListener("click", ouvrirProfil);
-
-  // Catégories d'adhésion : liste de choix et date d'expiration suggérée
-  var categories = cfgCarte.categories || [];
-  var liste = document.getElementById("liste-categories");
-  categories.forEach(function (c) { var o = document.createElement("option"); o.value = c.nom; liste.appendChild(o); });
-  document.getElementById("categorie").addEventListener("change", function (e) {
-    var exp = document.getElementById("expiration");
-    var c = categories.filter(function (x) { return x.nom === e.target.value; })[0];
-    if (c && c.fin && !exp.value) exp.value = c.fin;
-  });
 
   // L'adresse doit appartenir au domaine Microsoft de LAPIQ.
   var erreurCourriel = document.getElementById("erreur-courriel");
@@ -322,8 +401,9 @@
 
   /* ---------- Effacer les informations ---------- */
   document.getElementById("btn-effacer").addEventListener("click", function () {
-    if (!confirm("Effacer votre profil et votre carte de membre de cet appareil?")) return;
+    if (!confirm("Effacer le prénom, l'adresse et la carte enregistrés sur cet appareil?")) return;
     try { localStorage.removeItem(CLE); } catch (e) { /* rien à effacer */ }
+    effacerCarte();
     dlg.close("annuler");
     rendre();
     message("Vos informations ont été effacées de cet appareil.");
@@ -389,4 +469,13 @@
   }
 
   rendre();
+
+  // Une carte déjà retrouvée est rafraîchie. Sinon, un ancien numéro saisi
+  // à la main sert seulement de piste de recherche : le nom affiché vient du dossier.
+  var deja = lireCarte();
+  if (deja && deja.numero && navigator.onLine) {
+    chercherNumero(deja.numero, true);
+  } else if (!deja && navigator.onLine && /^LAPIQ-\d{6}$/i.test(String((lireProfil().numero || "")).replace(/\s/g, ""))) {
+    chercherNumero(String(lireProfil().numero).trim(), false);
+  }
 })();
