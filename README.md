@@ -15,7 +15,7 @@ En haut de l'écran d'accueil : la **carte de membre officielle**, retrouvée à
 - **Carte de membre officielle** : le membre indique son numéro `LAPIQ-AASNNN`. Le portail interroge `/api/membre` et affiche la carte du dossier (recto : écusson, nom, numéro, catégorie, validité ; verso : attestation, adresse, code QR vers lapiq.org). Il ne peut plus composer lui-même le nom, la catégorie ou la date. Écusson rouge et bleu pour les membres réguliers ; écusson noir et or, sans date au bandeau, pour les membres à vie (statut `0`). Toucher la carte l'agrandit. La dernière carte retrouvée reste disponible hors ligne.
 - Installable sur téléphone (Android : bouton « Installer » ; iPhone : bouton « Installer » qui affiche le guide Partager → « Sur l'écran d'accueil ») et sur ordinateur.
 - Bouton « Renouveler » qui apparaît 30 jours avant l'expiration (lien vers l'adhésion Yapla). Les membres à vie ne voient pas ce bouton.
-- Services : dossier de membre Yapla, Microsoft 365, Campus, site de LAPIQ, boutique, balado *Le Fall In*; réseaux sociaux et coordonnées en pied de page.
+- Services : dossier de membre Yapla, Microsoft 365, Campus, site de LAPIQ, boutique ; section Podcasts (*Le Fall-in* et *Caserne 85 — Astuces pour instructeurs*, avec jaquettes et lecteur Spotify) ; bouton « Rejoindre le groupe Facebook » ; réseaux sociaux et coordonnées en pied de page.
 - Bandeau « hors ligne », avis de nouvelle version, bouton « Partager le portail », effacement des données du profil.
 - Fonctionne hors ligne pour l'interface (les services eux-mêmes demandent Internet).
 - Profil local (prénom + courriel) : le courriel préremplit la connexion Microsoft 365 (`login_hint`). Sinon, `domain_hint` dirige vers la page de connexion de l'organisation.
@@ -28,7 +28,7 @@ Toutes les adresses sont dans **`config.js`**.
 Confirmé : site `https://lapiq.org`, Campus `https://campus.lapiq.org`, domaine Microsoft `lapiq.org`.
 Chaque membre se connecte à Microsoft 365 **et** au Campus avec son adresse `@lapiq.org` (authentification Microsoft). L'application refuse toute autre adresse dans le profil.
 
-Les liens Yapla, le courriel de soutien (info@lapiq.org), les catégories d'adhésion, la boutique, le balado et les réseaux sociaux proviennent de lapiq.org.
+Les liens Yapla, le courriel de soutien (info@lapiq.org), les catégories d'adhésion, la boutique, les balados (Le Fall-in et Caserne 85 — Astuces) et les réseaux sociaux proviennent de lapiq.org et de Spotify.
 
 ### Carte de membre — export Yapla
 
