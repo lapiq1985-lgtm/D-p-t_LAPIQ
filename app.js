@@ -142,6 +142,35 @@
     return c;
   }
 
+  /* ---------- Apple Wallet ---------- */
+  var appareilApple = /iphone|ipad|ipod|macintosh/i.test(navigator.userAgent);
+  var walletPret = null; // null = pas encore vérifié
+  function verifierWallet(apres) {
+    if (!cfg.wallet || !cfg.wallet.url || !appareilApple || walletPret !== null) return;
+    walletPret = false;
+    fetch(cfg.wallet.url + "?etat=1", { cache: "no-store" })
+      .then(function (r) { return r.ok ? r.json() : { pret: false }; })
+      .then(function (d) { walletPret = !!(d && d.pret); if (walletPret) apres(); })
+      .catch(function () { walletPret = false; });
+  }
+  // Envoie les informations de la carte au serveur, qui renvoie la carte .pkpass signée.
+  function ajouterAuWallet(p) {
+    var f = el("form", { method: "post", action: cfg.wallet.url, target: "_blank" });
+    ["nom", "numero", "categorie", "expiration"].forEach(function (k) {
+      var i = el("input", { type: "hidden", name: k }); i.value = p[k] || ""; f.appendChild(i);
+    });
+    document.body.appendChild(f); f.submit(); f.remove();
+  }
+  function boutonWallet(zone, p) {
+    if (!walletPret) { verifierWallet(rendre); return; }
+    var b = el("button", { type: "button", class: "btn-wallet", "aria-label": "Ajouter à Apple Wallet" },
+      '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="5" width="19" height="14" rx="3" fill="#fff"/>' +
+      '<path d="M2.5 9h19" stroke="#da3441" stroke-width="2.2"/><path d="M2.5 12h19" stroke="#f5a623" stroke-width="2.2"/>' +
+      '<path d="M2.5 15h19" stroke="#2fa84f" stroke-width="2.2"/></svg><span><small>Ajouter à</small>Apple Wallet</span>');
+    b.addEventListener("click", function () { ajouterAuWallet(p); });
+    zone.appendChild(b);
+  }
+
   function rendreCarte(p) {
     var zone = document.getElementById("zone-carte");
     zone.innerHTML = "";
@@ -167,6 +196,7 @@
       if (st) etat.appendChild(texte("span", { class: "statut " + st.classe }, st.libelle));
       etat.appendChild(texte("span", { class: "cm-aide" }, "Touchez la carte pour l\u2019agrandir et voir le verso."));
       zone.appendChild(etat);
+      boutonWallet(zone, p);
       if (st && st.classe !== "valide" && cfg.yapla && cfg.yapla.adhesion) {
         var r = lienExterne(cfg.yapla.adhesion, st.classe === "expiree" ? "Renouveler mon adhésion" : "Renouveler maintenant");
         r.className = "btn-renouveler";

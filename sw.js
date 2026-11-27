@@ -1,5 +1,5 @@
 // Service worker : garde le portail (et la carte de membre) disponible hors ligne.
-var CACHE = "lapiq-portail-v10";
+var CACHE = "lapiq-portail-v11";
 var QR = "https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js";
 var FICHIERS = ["./", "index.html", "styles.css", "app.js", "config.js",
   "manifest.webmanifest", "icons/logo-lapiq.png", "icons/logo-campus.png", "icons/favicon.png",
@@ -32,7 +32,8 @@ self.addEventListener("fetch", function (e) {
     }));
     return;
   }
-  if (new URL(e.request.url).origin !== location.origin) return;
+  var u = new URL(e.request.url);
+  if (u.origin !== location.origin || u.pathname.indexOf("/api/") === 0) return; // jamais de cache pour /api
   // Fichiers du portail : réseau d'abord (mises à jour de config.js), cache en secours.
   e.respondWith(fetch(e.request).then(function (r) {
     var copie = r.clone();

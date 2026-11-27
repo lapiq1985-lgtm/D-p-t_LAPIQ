@@ -21,6 +21,10 @@ window.LAPIQ_CONFIG = {
   confidentialite: "https://lapiq.org/confidentialite/",
   adresse: "6, 1re Avenue Ouest, Sainte-Anne-des-Monts (Québec) G4V 1B5",
 
+  // Carte Apple Wallet : fonction serveur du même projet Vercel (api/wallet.js).
+  // Le bouton n'apparaît que lorsque les certificats Apple sont configurés.
+  wallet: { url: "/api/wallet" },
+
   // Espace membres Yapla
   yapla: {
     connexion: "https://lapiq.s1.yapla.com/fr/espace-membres/authentication/",

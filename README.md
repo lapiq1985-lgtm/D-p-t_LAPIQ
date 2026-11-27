@@ -60,3 +60,26 @@ python3 -m http.server 8080
 
 ## Mise en ligne
 Ce sont des fichiers statiques : GitHub Pages, Vercel, Netlify ou l'hébergement du site de LAPIQ (ex. `portail.lapiq.org`). HTTPS est requis pour l'installation en PWA.
+
+## Carte Apple Wallet (à activer)
+Le bouton « Ajouter à Apple Wallet » apparaît sur iPhone, iPad et Mac **uniquement quand la fonction serveur est configurée**. Sans configuration, il reste caché et le portail fonctionne comme avant.
+
+- Fonction : `api/wallet.js` (Vercel, Node) — génère et **signe** une carte `.pkpass` (même contenu que la carte de membre : nom, numéro, catégorie, validité, code QR vers lapiq.org). La carte devient grisée dans Wallet après sa date d'expiration.
+- Images de la carte : `api/_wallet/` (logo LAPIQ).
+- Dépendance : `passkit-generator` (voir `package.json`).
+
+### Prérequis (une seule fois)
+1. Compte **Apple Developer** au nom de LAPIQ (99 $ US/an ; numéro D-U-N-S requis pour un organisme).
+2. Dans Certificates, Identifiers & Profiles : créer un **Pass Type ID** (ex. `pass.org.lapiq.carte`) et son **certificat**, puis l'exporter depuis le Trousseau en `.p12`.
+3. Télécharger le certificat intermédiaire **Apple WWDR G4** (`AppleWWDRCAG4.cer`).
+4. Convertir en PEM :
+   ```bash
+   openssl pkcs12 -in certificat.p12 -clcerts -nokeys -out signer.pem -legacy
+   openssl pkcs12 -in certificat.p12 -nocerts -out signer.key -legacy   # choisir un mot de passe
+   openssl x509 -inform DER -in AppleWWDRCAG4.cer -out wwdr.pem
+   ```
+5. Dans Vercel (projet du portail → Settings → Environment Variables), ajouter :
+   `WALLET_PASS_TYPE_ID`, `WALLET_TEAM_ID`, `WALLET_SIGNER_CERT` (contenu de signer.pem), `WALLET_SIGNER_KEY` (contenu de signer.key), `WALLET_SIGNER_KEY_PASSPHRASE`, `WALLET_WWDR` (contenu de wwdr.pem). Le contenu PEM peut aussi être collé encodé en base64.
+6. Redéployer. Le bouton apparaît alors automatiquement.
+
+**Important :** les informations de la carte sont saisies par le membre ; la carte Wallet le mentionne au verso. Pour une carte réellement vérifiée, il faudrait que la fonction lise les données dans Yapla.

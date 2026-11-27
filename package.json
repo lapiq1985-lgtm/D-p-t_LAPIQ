@@ -1,0 +1,9 @@
+{
+  "name": "portail-lapiq",
+  "private": true,
+  "description": "Portail des membres LAPIQ (site statique + fonction Apple Wallet)",
+  "engines": { "node": ">=22" },
+  "dependencies": {
+    "passkit-generator": "3.7.0"
+  }
+}

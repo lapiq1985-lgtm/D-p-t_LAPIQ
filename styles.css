@@ -292,3 +292,14 @@ dialog button.lien-danger:hover { background: transparent; color: var(--rouge-fo
 }
 .statut.bientot { background: #fff3cd; color: #7a5200; }
 .statut.expiree { background: var(--rouge); color: #fff; }
+
+/* Bouton « Ajouter à Apple Wallet » (style du badge Apple : noir, texte blanc) */
+.btn-wallet {
+  display: inline-flex; align-items: center; gap: 10px; margin-top: 12px;
+  padding: 8px 18px 8px 14px; border-radius: 10px; border: 1px solid #a6a6a6;
+  background: #000; color: #fff; font: inherit; cursor: pointer; line-height: 1.1; text-align: left;
+}
+.btn-wallet svg { width: 30px; height: 30px; flex: none; }
+.btn-wallet span { display: flex; flex-direction: column; font-size: 1.05rem; font-weight: 600; }
+.btn-wallet small { font-size: .7rem; font-weight: 400; }
+.btn-wallet:focus-visible { outline: 3px solid var(--rouge); outline-offset: 2px; }
