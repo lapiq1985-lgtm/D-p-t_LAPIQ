@@ -1,0 +1,30 @@
+[
+  {
+    "prenom": "Prénom",
+    "nom": "Nom",
+    "numero": "LAPIQ-261001",
+    "categorie": "Instructeur ENPQ",
+    "expiration": "2027-12-31"
+  },
+  {
+    "prenom": "Marie-Christine",
+    "nom": "Tremblay-Desjardins",
+    "numero": "LAPIQ-260001",
+    "categorie": "Retraité – membre à vie",
+    "expiration": "2027-12-31"
+  },
+  {
+    "prenom": "Jean",
+    "nom": "Dupont",
+    "numero": "LAPIQ-262015",
+    "categorie": "Enseignant",
+    "expiration": "2027-12-31"
+  },
+  {
+    "prenom": "Alexandra",
+    "nom": "Gagné",
+    "numero": "LAPIQ-263008",
+    "categorie": "Membre associé",
+    "expiration": "2027-12-31"
+  }
+]
